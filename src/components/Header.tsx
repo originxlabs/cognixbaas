@@ -1,0 +1,95 @@
+import { useState, useEffect } from 'react';
+import { Menu, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import CognixLogo from './CognixLogo';
+import { cn } from '@/lib/utils';
+
+const Header = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navLinks = [
+    { href: '#features', label: 'Features' },
+    { href: '#agents', label: 'Agents' },
+    { href: '#technology', label: 'Technology' },
+    { href: '#enterprise', label: 'Enterprise' },
+  ];
+
+  return (
+    <header
+      className={cn(
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+        isScrolled
+          ? 'glass py-3'
+          : 'bg-transparent py-5'
+      )}
+    >
+      <div className="container mx-auto px-4 flex items-center justify-between">
+        <CognixLogo size="sm" />
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        {/* Desktop CTA */}
+        <div className="hidden md:flex items-center gap-4">
+          <Button variant="ghost" size="sm">
+            Documentation
+          </Button>
+          <Button variant="glow" size="sm" asChild>
+            <a href="#waitlist">Join Waitlist</a>
+          </Button>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          className="md:hidden p-2 text-foreground"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden glass mt-2 mx-4 rounded-xl p-4 animate-fade-up">
+          <nav className="flex flex-col gap-4">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-muted-foreground hover:text-foreground transition-colors py-2 font-medium"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.label}
+              </a>
+            ))}
+            <Button variant="glow" className="mt-4" asChild>
+              <a href="#waitlist">Join Waitlist</a>
+            </Button>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+};
+
+export default Header;
