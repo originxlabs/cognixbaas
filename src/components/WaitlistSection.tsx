@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { ArrowRight, Sparkles, CheckCircle, Mail } from 'lucide-react';
+import { ArrowRight, Sparkles, CheckCircle, Mail, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const WaitlistSection = () => {
   const [email, setEmail] = useState('');
@@ -16,14 +17,50 @@ const WaitlistSection = () => {
       return;
     }
 
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    toast.success('Welcome to the Cognix waitlist!');
+    try {
+      const { error } = await supabase
+        .from('waitlist_signups')
+        .insert([
+          { 
+            email: email.toLowerCase().trim(),
+            source: 'website',
+            user_agent: navigator.userAgent
+          }
+        ]);
+
+      if (error) {
+        if (error.code === '23505') {
+          // Duplicate email
+          toast.info("You're already on the waitlist!", {
+            description: "We'll notify you when Cognix is ready."
+          });
+          setIsSubmitted(true);
+        } else {
+          throw error;
+        }
+      } else {
+        setIsSubmitted(true);
+        toast.success('Welcome to the Cognix waitlist!', {
+          description: "You'll be among the first to know when we launch."
+        });
+      }
+    } catch (error) {
+      console.error('Error signing up:', error);
+      toast.error('Something went wrong', {
+        description: 'Please try again later.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const benefits = [
@@ -86,7 +123,10 @@ const WaitlistSection = () => {
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
-                    <span className="animate-pulse">Joining...</span>
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Joining...
+                    </>
                   ) : (
                     <>
                       Join Waitlist
@@ -97,7 +137,7 @@ const WaitlistSection = () => {
               </div>
             </form>
           ) : (
-            <div className="glass rounded-2xl p-8 max-w-xl mx-auto mb-12">
+            <div className="glass rounded-2xl p-8 max-w-xl mx-auto mb-12 animate-scale-in">
               <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-foreground mb-2">You're on the list!</h3>
               <p className="text-muted-foreground">
