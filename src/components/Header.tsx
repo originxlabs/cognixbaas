@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CognixLogo from './CognixLogo';
+import { ThemeToggle } from './ThemeToggle';
 import { cn } from '@/lib/utils';
 
 const Header = () => {
@@ -33,7 +35,7 @@ const Header = () => {
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <CognixLogo size="sm" />
+        <CognixLogo size="sm" showText={false} />
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8">
@@ -49,9 +51,10 @@ const Header = () => {
         </nav>
 
         {/* Desktop CTA */}
-        <div className="hidden md:flex items-center gap-4">
-          <Button variant="ghost" size="sm">
-            Documentation
+        <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/docs">Documentation</Link>
           </Button>
           <Button variant="glow" size="sm" asChild>
             <a href="#waitlist">Join Waitlist</a>
@@ -59,13 +62,16 @@ const Header = () => {
         </div>
 
         {/* Mobile Menu Button */}
-        <button
-          className="md:hidden p-2 text-foreground"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="md:hidden flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            className="p-2 text-foreground"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -82,6 +88,13 @@ const Header = () => {
                 {link.label}
               </a>
             ))}
+            <Link
+              to="/docs"
+              className="text-muted-foreground hover:text-foreground transition-colors py-2 font-medium"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Documentation
+            </Link>
             <Button variant="glow" className="mt-4" asChild>
               <a href="#waitlist">Join Waitlist</a>
             </Button>
