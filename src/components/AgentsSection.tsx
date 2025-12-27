@@ -9,6 +9,7 @@ import {
   TestTube2,
   Sparkles 
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const agents = [
   {
@@ -61,6 +62,29 @@ const agents = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut" as const,
+    },
+  },
+};
+
 const AgentsSection = () => {
   return (
     <section id="agents" className="py-32 relative overflow-hidden">
@@ -69,7 +93,13 @@ const AgentsSection = () => {
       
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center max-w-3xl mx-auto mb-20"
+        >
           <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-6">
             <Sparkles className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-muted-foreground">
@@ -85,15 +115,21 @@ const AgentsSection = () => {
             Each agent specializes in a critical aspect of backend development, 
             working independently yet collaboratively to deliver production-ready systems.
           </p>
-        </div>
+        </motion.div>
 
         {/* Agents Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
           {agents.map((agent, index) => (
-            <div
+            <motion.div
               key={agent.name}
+              variants={itemVariants}
               className="group glass rounded-2xl p-6 hover:border-primary/50 transition-all duration-500 hover:-translate-y-2"
-              style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Icon */}
               <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${agent.color} p-3 mb-4 group-hover:scale-110 transition-transform duration-300`}>
@@ -107,12 +143,18 @@ const AgentsSection = () => {
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {agent.description}
               </p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Multi-LLM Support */}
-        <div className="mt-20 text-center">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-20 text-center"
+        >
           <div className="glass rounded-2xl p-8 max-w-4xl mx-auto">
             <h3 className="text-xl font-bold text-foreground mb-4">
               Model-Agnostic Intelligence
@@ -131,7 +173,7 @@ const AgentsSection = () => {
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
