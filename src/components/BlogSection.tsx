@@ -1,5 +1,6 @@
-import { ArrowRight, Clock, BookOpen, Tag } from 'lucide-react';
+import { ArrowRight, Clock, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
 
 interface BlogPost {
   id: string;
@@ -73,6 +74,23 @@ const categoryColors: Record<string, string> = {
   'API Design': 'bg-sky-400/20 text-sky-400',
 };
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" as const },
+  },
+};
+
 const BlogSection = () => {
   const featuredPost = blogPosts.find(post => post.featured);
   const regularPosts = blogPosts.filter(post => !post.featured);
@@ -81,7 +99,13 @@ const BlogSection = () => {
     <section id="blog" className="py-32 relative">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="text-center max-w-3xl mx-auto mb-16"
+        >
           <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-6">
             <BookOpen className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-muted-foreground">
@@ -97,11 +121,17 @@ const BlogSection = () => {
             Deep dives into backend architecture, AI-powered development, 
             and enterprise engineering practices.
           </p>
-        </div>
+        </motion.div>
 
         {/* Featured Post */}
         {featuredPost && (
-          <div className="mb-12">
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mb-12"
+          >
             <div className="glass rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300 group">
               <div className="grid md:grid-cols-2 gap-0">
                 {/* Image placeholder */}
@@ -145,14 +175,21 @@ const BlogSection = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Regular Posts Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
+        >
           {regularPosts.map((post) => (
-            <article
+            <motion.article
               key={post.id}
+              variants={itemVariants}
               className="glass rounded-2xl p-6 hover:border-primary/50 transition-all duration-300 group flex flex-col"
             >
               {/* Category & Date */}
@@ -184,12 +221,18 @@ const BlogSection = () => {
                   <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
-            </article>
+            </motion.article>
           ))}
-        </div>
+        </motion.div>
 
         {/* CTA */}
-        <div className="text-center">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-center"
+        >
           <p className="text-muted-foreground mb-6">
             Our blog launches alongside Cognix. Join the waitlist to get notified.
           </p>
@@ -199,7 +242,7 @@ const BlogSection = () => {
               <ArrowRight className="w-4 h-4" />
             </a>
           </Button>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

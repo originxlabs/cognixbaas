@@ -4,6 +4,7 @@ import HeroSection from '@/components/HeroSection';
 import AgentsSection from '@/components/AgentsSection';
 import AgentWorkflowVisualization from '@/components/AgentWorkflowVisualization';
 import FeaturesSection from '@/components/FeaturesSection';
+import InteractiveCodeDemo from '@/components/InteractiveCodeDemo';
 import TechnologySection from '@/components/TechnologySection';
 import LearningSection from '@/components/LearningSection';
 import EnterpriseSection from '@/components/EnterpriseSection';
@@ -41,6 +42,7 @@ const Index = () => {
         <main>
           <HeroSection />
           <FeaturesSection />
+          <InteractiveCodeDemo />
           <AgentsSection />
           <AgentWorkflowVisualization />
           <TechnologySection />
