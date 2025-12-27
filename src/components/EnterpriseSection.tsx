@@ -1,4 +1,23 @@
 import { Shield, Eye, Scale, Lock, FileCheck, Server } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.5, ease: "easeOut" as const },
+  },
+};
 
 const EnterpriseSection = () => {
   const features = [
@@ -43,7 +62,13 @@ const EnterpriseSection = () => {
       
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="text-center max-w-3xl mx-auto mb-20"
+        >
           <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-6">
             <Shield className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-muted-foreground">
@@ -59,13 +84,20 @@ const EnterpriseSection = () => {
             No exaggerated claims—just solid engineering excellence designed for 
             the world's most demanding use cases.
           </p>
-        </div>
+        </motion.div>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto"
+        >
           {features.map((feature) => (
-            <div
+            <motion.div
               key={feature.title}
+              variants={itemVariants}
               className="glass rounded-2xl p-8 hover:border-primary/50 transition-all duration-300 group"
             >
               <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center mb-6 group-hover:from-primary/30 group-hover:to-accent/30 transition-colors">
@@ -73,17 +105,23 @@ const EnterpriseSection = () => {
               </div>
               <h3 className="text-xl font-bold text-foreground mb-3">{feature.title}</h3>
               <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Trust Statement */}
-        <div className="mt-20 text-center">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mt-20 text-center"
+        >
           <p className="text-xl text-muted-foreground italic max-w-2xl mx-auto">
             "Designed with enterprise use cases in mind. 
             Every architectural decision prioritizes long-term maintainability and security."
           </p>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,4 +1,22 @@
 import { Server, Database, Cloud, GitBranch, Layers } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" as const },
+  },
+};
 
 const TechnologySection = () => {
   const languages = [
@@ -31,7 +49,13 @@ const TechnologySection = () => {
       
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="text-center max-w-3xl mx-auto mb-20"
+        >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6">
             <span className="text-foreground">Built on</span>
             <br />
@@ -40,11 +64,17 @@ const TechnologySection = () => {
           <p className="text-lg text-muted-foreground">
             Enterprise-grade stack designed for scale, security, and performance.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto"
+        >
           {/* Languages */}
-          <div className="glass rounded-2xl p-8">
+          <motion.div variants={itemVariants} className="glass rounded-2xl p-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
                 <Server className="w-5 h-5 text-background" />
@@ -68,10 +98,10 @@ const TechnologySection = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Architecture */}
-          <div className="glass rounded-2xl p-8">
+          <motion.div variants={itemVariants} className="glass rounded-2xl p-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-primary flex items-center justify-center">
                 <Layers className="w-5 h-5 text-background" />
@@ -97,10 +127,10 @@ const TechnologySection = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Databases */}
-          <div className="glass rounded-2xl p-8">
+          <motion.div variants={itemVariants} className="glass rounded-2xl p-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
                 <Database className="w-5 h-5 text-background" />
@@ -120,10 +150,10 @@ const TechnologySection = () => {
             <p className="mt-4 text-sm text-muted-foreground">
               Enterprise-grade schema design. Scalable to millions of requests.
             </p>
-          </div>
+          </motion.div>
 
           {/* Cloud & Deployment */}
-          <div className="glass rounded-2xl p-8">
+          <motion.div variants={itemVariants} className="glass rounded-2xl p-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-sky-400 to-sky-600 flex items-center justify-center">
                 <Cloud className="w-5 h-5 text-background" />
@@ -145,11 +175,17 @@ const TechnologySection = () => {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Repository Strategy */}
-        <div className="mt-12 max-w-2xl mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mt-12 max-w-2xl mx-auto"
+        >
           <div className="glass rounded-2xl p-8 text-center">
             <div className="flex items-center justify-center gap-3 mb-4">
               <GitBranch className="w-6 h-6 text-primary" />
@@ -167,7 +203,7 @@ const TechnologySection = () => {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

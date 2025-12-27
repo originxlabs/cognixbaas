@@ -1,4 +1,5 @@
 import { GraduationCap, BookOpen, TrendingUp, Users } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const LearningSection = () => {
   const benefits = [
@@ -10,12 +11,12 @@ const LearningSection = () => {
     {
       icon: TrendingUp,
       title: 'Grow Into Senior Engineers',
-      description: 'Cognix doesn\'t just build—it teaches. Watch how production-grade systems are structured and learn best practices along the way.',
+      description: "Cognix doesn't just build—it teaches. Watch how production-grade systems are structured and learn best practices along the way.",
     },
     {
       icon: Users,
       title: 'For Every Skill Level',
-      description: 'Whether you\'re a CS student, junior developer, or seasoned architect, Cognix adapts to accelerate your learning and productivity.',
+      description: "Whether you're a CS student, junior developer, or seasoned architect, Cognix adapts to accelerate your learning and productivity.",
     },
   ];
 
@@ -25,7 +26,12 @@ const LearningSection = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left - Content */}
-            <div>
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
               <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-6">
                 <GraduationCap className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-muted-foreground">
@@ -45,8 +51,15 @@ const LearningSection = () => {
               </p>
 
               <div className="space-y-6">
-                {benefits.map((benefit) => (
-                  <div key={benefit.title} className="flex gap-4">
+                {benefits.map((benefit, index) => (
+                  <motion.div 
+                    key={benefit.title} 
+                    initial={{ opacity: 0, x: -30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="flex gap-4"
+                  >
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center shrink-0">
                       <benefit.icon className="w-6 h-6 text-primary" />
                     </div>
@@ -54,13 +67,19 @@ const LearningSection = () => {
                       <h3 className="font-bold text-foreground mb-1">{benefit.title}</h3>
                       <p className="text-sm text-muted-foreground">{benefit.description}</p>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
-            </div>
+            </motion.div>
 
             {/* Right - Visual */}
-            <div className="glass rounded-2xl p-8">
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+              className="glass rounded-2xl p-8"
+            >
               <div className="space-y-4">
                 <div className="flex items-center gap-3 pb-4 border-b border-border">
                   <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
@@ -70,7 +89,13 @@ const LearningSection = () => {
                 </div>
                 
                 <div className="space-y-4 text-sm">
-                  <div className="p-4 bg-secondary/50 rounded-lg border-l-4 border-primary">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.3 }}
+                    className="p-4 bg-secondary/50 rounded-lg border-l-4 border-primary"
+                  >
                     <p className="text-muted-foreground mb-2">
                       <span className="text-primary font-bold">Why Clean Architecture?</span>
                     </p>
@@ -78,9 +103,15 @@ const LearningSection = () => {
                       I chose Clean Architecture because it separates concerns into distinct layers. 
                       This makes your codebase testable, maintainable, and independent of frameworks or databases.
                     </p>
-                  </div>
+                  </motion.div>
                   
-                  <div className="p-4 bg-secondary/50 rounded-lg border-l-4 border-accent">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.4 }}
+                    className="p-4 bg-secondary/50 rounded-lg border-l-4 border-accent"
+                  >
                     <p className="text-muted-foreground mb-2">
                       <span className="text-accent font-bold">Repository Pattern Benefit</span>
                     </p>
@@ -88,9 +119,15 @@ const LearningSection = () => {
                       By abstracting data access, you can easily switch from PostgreSQL to MongoDB 
                       without changing your business logic—a key enterprise requirement.
                     </p>
-                  </div>
+                  </motion.div>
                   
-                  <div className="p-4 bg-secondary/50 rounded-lg border-l-4 border-emerald-400">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.5 }}
+                    className="p-4 bg-secondary/50 rounded-lg border-l-4 border-emerald-400"
+                  >
                     <p className="text-muted-foreground mb-2">
                       <span className="text-emerald-400 font-bold">Security First</span>
                     </p>
@@ -98,10 +135,10 @@ const LearningSection = () => {
                       JWT tokens with refresh rotation prevent token theft. Combined with RBAC, 
                       you have enterprise-grade access control out of the box.
                     </p>
-                  </div>
+                  </motion.div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
