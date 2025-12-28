@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Code2, FileJson, Play, Database, MonitorPlay, Sparkles } from 'lucide-react';
+import { Code2, FileJson, Play, Database, MonitorPlay, Sparkles, RotateCcw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import PromptInput from './PromptInput';
 import CodePreview from './CodePreview';
 import ApiDocsPreview from './ApiDocsPreview';
@@ -37,6 +38,19 @@ const LivePreviewDashboard = () => {
     setHasStarted(true);
     setGenerationStep(1);
   }, []);
+
+  const handleReplay = useCallback(() => {
+    setIsGenerating(false);
+    setGenerationStep(0);
+    setActiveTab('code');
+    setHasStarted(false);
+    // Start again after a short delay
+    setTimeout(() => {
+      handleSubmit('Build an e-commerce API with products, orders, cart, and user authentication');
+    }, 500);
+  }, [handleSubmit]);
+
+  const isComplete = generationStep >= 7 && !isGenerating;
 
   // Simulate generation progress
   useEffect(() => {
@@ -94,9 +108,22 @@ const LivePreviewDashboard = () => {
         {/* Left Panel - Prompt & Progress */}
         <div className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-border flex flex-col">
           {/* Header */}
-          <div className="flex items-center gap-2 px-4 py-3 bg-secondary/30 border-b border-border">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm font-semibold text-foreground">Cognix Generator</span>
+          <div className="flex items-center justify-between px-4 py-3 bg-secondary/30 border-b border-border">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-primary" />
+              <span className="text-sm font-semibold text-foreground">Cognix Generator</span>
+            </div>
+            {isComplete && (
+              <Button
+                onClick={handleReplay}
+                size="sm"
+                variant="outline"
+                className="h-7 text-xs gap-1.5"
+              >
+                <RotateCcw className="w-3 h-3" />
+                Replay
+              </Button>
+            )}
           </div>
 
           {/* Prompt Input */}
