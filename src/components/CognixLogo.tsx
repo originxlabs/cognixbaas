@@ -4,9 +4,15 @@ interface CognixLogoProps {
   className?: string;
   size?: "sm" | "md" | "lg" | "xl";
   showText?: boolean;
+  variant?: "default" | "monochrome";
 }
 
-const CognixLogo = ({ className, size = "md", showText = true }: CognixLogoProps) => {
+const CognixLogo = ({ 
+  className, 
+  size = "md", 
+  showText = true,
+  variant = "default"
+}: CognixLogoProps) => {
   const sizeClasses = {
     sm: "w-8 h-8",
     md: "w-10 h-10",
@@ -21,120 +27,201 @@ const CognixLogo = ({ className, size = "md", showText = true }: CognixLogoProps
     xl: "text-4xl",
   };
 
+  const subtextSizes = {
+    sm: "text-[8px]",
+    md: "text-[9px]",
+    lg: "text-[10px]",
+    xl: "text-xs",
+  };
+
   return (
     <div className={cn("flex items-center gap-3", className)}>
-      {/* Logo Mark */}
+      {/* Logo Mark - Premium Hexagonal Design */}
       <div className={cn("relative", sizeClasses[size])}>
-        {/* Outer glow ring */}
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary via-accent to-primary opacity-50 blur-md animate-pulse-glow" />
+        {/* Subtle glow effect */}
+        <div className="absolute inset-0 rounded-lg bg-primary/20 blur-xl opacity-60" />
         
-        {/* Main logo container */}
-        <div className="relative w-full h-full rounded-xl bg-gradient-to-br from-primary to-accent p-[2px]">
-          <div className="w-full h-full rounded-[10px] bg-background flex items-center justify-center">
-            {/* Cognix Unique Logo - Neural Brain with Code Integration */}
-            <svg
-              viewBox="0 0 48 48"
-              className="w-3/4 h-3/4"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {/* Outer orbital ring */}
-              <ellipse
-                cx="24"
-                cy="24"
-                rx="20"
-                ry="8"
-                className="stroke-primary/30"
-                strokeWidth="0.8"
-                transform="rotate(-25 24 24)"
-              />
-              <ellipse
-                cx="24"
-                cy="24"
-                rx="20"
-                ry="8"
-                className="stroke-accent/30"
-                strokeWidth="0.8"
-                transform="rotate(25 24 24)"
-              />
-              
-              {/* Brain-like neural structure */}
-              <path
-                d="M24 8 C16 8 10 14 10 22 C10 30 16 36 24 38 C32 36 38 30 38 22 C38 14 32 8 24 8"
-                className="stroke-primary"
-                strokeWidth="1.2"
-                fill="none"
-              />
-              
-              {/* Left hemisphere */}
-              <path
-                d="M14 20 Q16 16 20 18 Q22 20 20 24 Q18 28 14 26"
-                className="stroke-primary fill-primary/10"
-                strokeWidth="1"
-              />
-              
-              {/* Right hemisphere */}
-              <path
-                d="M34 20 Q32 16 28 18 Q26 20 28 24 Q30 28 34 26"
-                className="stroke-accent fill-accent/10"
-                strokeWidth="1"
-              />
-              
-              {/* Center connection - Code symbol < > */}
-              <path
-                d="M21 21 L18 24 L21 27"
-                className="stroke-primary"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M27 21 L30 24 L27 27"
-                className="stroke-accent"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              
-              {/* Central core */}
-              <circle cx="24" cy="24" r="3" className="fill-primary" />
-              <circle cx="24" cy="24" r="1.5" className="fill-background" />
-              
-              {/* Neural nodes */}
-              <circle cx="16" cy="14" r="1.5" className="fill-primary animate-pulse" />
-              <circle cx="32" cy="14" r="1.5" className="fill-accent animate-pulse" style={{ animationDelay: '0.3s' }} />
-              <circle cx="12" cy="24" r="1.5" className="fill-accent animate-pulse" style={{ animationDelay: '0.6s' }} />
-              <circle cx="36" cy="24" r="1.5" className="fill-primary animate-pulse" style={{ animationDelay: '0.9s' }} />
-              <circle cx="16" cy="34" r="1.5" className="fill-accent animate-pulse" style={{ animationDelay: '0.5s' }} />
-              <circle cx="32" cy="34" r="1.5" className="fill-primary animate-pulse" style={{ animationDelay: '0.8s' }} />
-              
-              {/* Connection lines */}
-              <line x1="16" y1="14" x2="20" y2="18" className="stroke-primary/40" strokeWidth="0.5" />
-              <line x1="32" y1="14" x2="28" y2="18" className="stroke-accent/40" strokeWidth="0.5" />
-              <line x1="12" y1="24" x2="18" y2="24" className="stroke-accent/40" strokeWidth="0.5" />
-              <line x1="36" y1="24" x2="30" y2="24" className="stroke-primary/40" strokeWidth="0.5" />
-              <line x1="16" y1="34" x2="20" y2="28" className="stroke-accent/40" strokeWidth="0.5" />
-              <line x1="32" y1="34" x2="28" y2="28" className="stroke-primary/40" strokeWidth="0.5" />
-              
-              {/* Top spark */}
-              <path
-                d="M24 4 L24 7 M21 5 L24 7 L27 5"
-                className="stroke-primary"
-                strokeWidth="1"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-        </div>
+        {/* Main logo SVG */}
+        <svg
+          viewBox="0 0 48 48"
+          className="relative w-full h-full"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            {/* Primary gradient - Electric Cyan */}
+            <linearGradient id="cognix-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="hsl(var(--primary))" />
+              <stop offset="100%" stopColor="hsl(var(--primary) / 0.7)" />
+            </linearGradient>
+            
+            {/* Glow filter */}
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Background hexagon - outer shell */}
+          <path
+            d="M24 4L42 14V34L24 44L6 34V14L24 4Z"
+            fill="none"
+            stroke={variant === "monochrome" ? "currentColor" : "url(#cognix-gradient)"}
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+            className="opacity-30"
+          />
+
+          {/* Inner hexagon - main shape */}
+          <path
+            d="M24 8L38 16V32L24 40L10 32V16L24 8Z"
+            fill="none"
+            stroke={variant === "monochrome" ? "currentColor" : "url(#cognix-gradient)"}
+            strokeWidth="2"
+            strokeLinejoin="round"
+          />
+
+          {/* Connection path 1 - Top right */}
+          <line
+            x1="24"
+            y1="24"
+            x2="36"
+            y2="18"
+            stroke={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            className="opacity-80"
+          />
+
+          {/* Connection path 2 - Bottom right */}
+          <line
+            x1="24"
+            y1="24"
+            x2="36"
+            y2="30"
+            stroke={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            className="opacity-80"
+          />
+
+          {/* Connection path 3 - Left */}
+          <line
+            x1="24"
+            y1="24"
+            x2="12"
+            y2="24"
+            stroke={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            className="opacity-80"
+          />
+
+          {/* Connection path 4 - Top */}
+          <line
+            x1="24"
+            y1="24"
+            x2="24"
+            y2="12"
+            stroke={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            className="opacity-60"
+          />
+
+          {/* Connection path 5 - Bottom */}
+          <line
+            x1="24"
+            y1="24"
+            x2="24"
+            y2="36"
+            stroke={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            className="opacity-60"
+          />
+
+          {/* Outer nodes */}
+          <circle
+            cx="36"
+            cy="18"
+            r="2"
+            fill={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
+            className="opacity-90"
+          />
+          <circle
+            cx="36"
+            cy="30"
+            r="2"
+            fill={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
+            className="opacity-90"
+          />
+          <circle
+            cx="12"
+            cy="24"
+            r="2"
+            fill={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
+            className="opacity-90"
+          />
+          <circle
+            cx="24"
+            cy="12"
+            r="1.5"
+            fill={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
+            className="opacity-70"
+          />
+          <circle
+            cx="24"
+            cy="36"
+            r="1.5"
+            fill={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
+            className="opacity-70"
+          />
+
+          {/* Central nucleus - core */}
+          <circle
+            cx="24"
+            cy="24"
+            r="5"
+            fill={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
+            filter="url(#glow)"
+          />
+          <circle
+            cx="24"
+            cy="24"
+            r="2.5"
+            fill="hsl(var(--background))"
+          />
+          <circle
+            cx="24"
+            cy="24"
+            r="1"
+            fill={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
+          />
+        </svg>
       </div>
 
-      {/* Logo Text */}
+      {/* Logo Text - Custom Modern Sans-Serif Wordmark */}
       {showText && (
         <div className="flex flex-col">
-          <span className={cn("font-bold tracking-tight gradient-text", textSizes[size])}>
+          <span 
+            className={cn(
+              "font-bold tracking-[0.15em] text-foreground",
+              textSizes[size]
+            )}
+            style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+          >
             COGNIX
           </span>
-          <span className="text-[10px] text-muted-foreground font-semibold tracking-widest uppercase">
+          <span 
+            className={cn(
+              "text-muted-foreground font-medium tracking-[0.2em] uppercase -mt-0.5",
+              subtextSizes[size]
+            )}
+          >
             by CROPXON
           </span>
         </div>
