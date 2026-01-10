@@ -23,6 +23,7 @@ const Header = () => {
     { href: '#agents', label: 'Agents' },
     { href: '#technology', label: 'Technology' },
     { href: '#enterprise', label: 'Enterprise' },
+    { href: '#blog', label: 'Blog' },
   ];
 
   return (
