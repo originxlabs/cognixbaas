@@ -1,112 +1,52 @@
 <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <!-- Primary gradient - Electric Cyan -->
-    <linearGradient id="cognix-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#22d3ee"/>
-      <stop offset="100%" stop-color="#06b6d4"/>
-    </linearGradient>
-    
-    <!-- Glow filter -->
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-  </defs>
-
   <!-- Dark background -->
-  <rect width="48" height="48" rx="10" fill="#0a0a12"/>
-
-  <!-- Background hexagon - outer shell -->
+  <rect width="48" height="48" rx="10" fill="#0a0a0f"/>
+  
+  <!-- Interlocking flowing shape - First path -->
   <path
-    d="M24 4L42 14V34L24 44L6 34V14L24 4Z"
-    fill="none"
-    stroke="url(#cognix-gradient)"
-    stroke-width="1"
+    d="M24 8
+       C30 8 35 13 35 19
+       C35 22 33.5 24.5 31 26.5
+       L26 30
+       C24.5 31 24.5 32.5 26 33.5
+       L31 37
+       C33.5 39 30.5 42 27.5 40.5
+       L19 35
+       C16 33.5 14 30.5 14 27
+       C14 24 15.5 21.5 18 19.5
+       L23 15.5
+       C24.5 14.5 24.5 13 23 12
+       L18 8.5
+       C15.5 7 18.5 4 21 5.5
+       L24 7.5"
+    stroke="#ffffff"
+    stroke-width="3"
+    stroke-linecap="round"
     stroke-linejoin="round"
-    opacity="0.3"
+    fill="none"
   />
-
-  <!-- Inner hexagon - main shape -->
+  
+  <!-- Interlocking flowing shape - Second path (creates woven effect) -->
   <path
-    d="M24 8L38 16V32L24 40L10 32V16L24 8Z"
-    fill="none"
-    stroke="url(#cognix-gradient)"
-    stroke-width="1.5"
+    d="M24 40
+       C18 40 13 35 13 29
+       C13 26 14.5 23.5 17 21.5
+       L22 17.5
+       C23.5 16.5 23.5 15 22 14
+       L17 10.5
+       C14.5 9 17.5 6 20.5 7.5
+       L29 13
+       C32 14.5 34 17.5 34 21
+       C34 24 32.5 26.5 30 28.5
+       L25 32.5
+       C23.5 33.5 23.5 35 25 36
+       L30 39.5
+       C32.5 41 29.5 44 27 42.5
+       L24 40.5"
+    stroke="#22d3ee"
+    stroke-width="3"
+    stroke-linecap="round"
     stroke-linejoin="round"
+    fill="none"
   />
-
-  <!-- Connection path 1 - Top right -->
-  <line
-    x1="24"
-    y1="24"
-    x2="36"
-    y2="18"
-    stroke="#22d3ee"
-    stroke-width="1.2"
-    stroke-linecap="round"
-    opacity="0.8"
-  />
-
-  <!-- Connection path 2 - Bottom right -->
-  <line
-    x1="24"
-    y1="24"
-    x2="36"
-    y2="30"
-    stroke="#22d3ee"
-    stroke-width="1.2"
-    stroke-linecap="round"
-    opacity="0.8"
-  />
-
-  <!-- Connection path 3 - Left -->
-  <line
-    x1="24"
-    y1="24"
-    x2="12"
-    y2="24"
-    stroke="#22d3ee"
-    stroke-width="1.2"
-    stroke-linecap="round"
-    opacity="0.8"
-  />
-
-  <!-- Connection path 4 - Top -->
-  <line
-    x1="24"
-    y1="24"
-    x2="24"
-    y2="12"
-    stroke="#22d3ee"
-    stroke-width="1.2"
-    stroke-linecap="round"
-    opacity="0.6"
-  />
-
-  <!-- Connection path 5 - Bottom -->
-  <line
-    x1="24"
-    y1="24"
-    x2="24"
-    y2="36"
-    stroke="#22d3ee"
-    stroke-width="1.2"
-    stroke-linecap="round"
-    opacity="0.6"
-  />
-
-  <!-- Outer nodes -->
-  <circle cx="36" cy="18" r="2" fill="#22d3ee" opacity="0.9"/>
-  <circle cx="36" cy="30" r="2" fill="#22d3ee" opacity="0.9"/>
-  <circle cx="12" cy="24" r="2" fill="#22d3ee" opacity="0.9"/>
-  <circle cx="24" cy="12" r="1.5" fill="#22d3ee" opacity="0.7"/>
-  <circle cx="24" cy="36" r="1.5" fill="#22d3ee" opacity="0.7"/>
-
-  <!-- Central nucleus - core with glow -->
-  <circle cx="24" cy="24" r="5" fill="#22d3ee" filter="url(#glow)"/>
-  <circle cx="24" cy="24" r="2.5" fill="#0a0a12"/>
-  <circle cx="24" cy="24" r="1" fill="#22d3ee"/>
 </svg>

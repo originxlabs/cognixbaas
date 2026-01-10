@@ -19,11 +19,11 @@ const Header = () => {
   }, []);
 
   const navLinks = [
-    { href: '#features', label: 'Features' },
-    { href: '#agents', label: 'Agents' },
-    { href: '#technology', label: 'Technology' },
-    { href: '#enterprise', label: 'Enterprise' },
-    { href: '#blog', label: 'Blog' },
+    { href: '/#features', label: 'Features' },
+    { href: '/#agents', label: 'Agents' },
+    { href: '/#technology', label: 'Technology' },
+    { href: '/pricing', label: 'Pricing', isRoute: true },
+    { href: '/blog', label: 'Blog', isRoute: true },
   ];
 
   return (
@@ -31,40 +31,50 @@ const Header = () => {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         isScrolled
-          ? 'glass py-3'
-          : 'bg-transparent py-5'
+          ? 'glass py-2'
+          : 'bg-transparent py-4'
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-2.5">
           <CognixLogo size="sm" showText={false} />
           <div className="flex flex-col">
-            <span className="text-lg font-bold tracking-tight gradient-text">COGNIX</span>
-            <span className="text-[9px] text-muted-foreground font-semibold tracking-widest uppercase -mt-0.5">by CROPXON</span>
+            <span className="text-base font-bold tracking-wide gradient-text">COGNIX</span>
+            <span className="text-[8px] text-muted-foreground font-semibold tracking-widest uppercase -mt-0.5">by CROPXON</span>
           </div>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium"
-            >
-              {link.label}
-            </a>
+            link.isRoute ? (
+              <Link
+                key={link.href}
+                to={link.href}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium"
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium"
+              >
+                {link.label}
+              </a>
+            )
           ))}
         </nav>
 
         {/* Desktop CTA */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-2">
           <ThemeToggle />
           <Button variant="ghost" size="sm" asChild>
-            <Link to="/docs">Documentation</Link>
+            <Link to="/docs">Docs</Link>
           </Button>
           <Button variant="glow" size="sm" asChild>
-            <a href="#waitlist">Join Waitlist</a>
+            <a href="/#waitlist">Join Waitlist</a>
           </Button>
         </div>
 
@@ -84,16 +94,27 @@ const Header = () => {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden glass mt-2 mx-4 rounded-xl p-4 animate-fade-up">
-          <nav className="flex flex-col gap-4">
+          <nav className="flex flex-col gap-3">
             {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-muted-foreground hover:text-foreground transition-colors py-2 font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {link.label}
-              </a>
+              link.isRoute ? (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="text-muted-foreground hover:text-foreground transition-colors py-2 font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-muted-foreground hover:text-foreground transition-colors py-2 font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </a>
+              )
             ))}
             <Link
               to="/docs"
@@ -102,8 +123,8 @@ const Header = () => {
             >
               Documentation
             </Link>
-            <Button variant="glow" className="mt-4" asChild>
-              <a href="#waitlist">Join Waitlist</a>
+            <Button variant="glow" className="mt-3" asChild>
+              <a href="/#waitlist">Join Waitlist</a>
             </Button>
           </nav>
         </div>

@@ -102,7 +102,7 @@ const BlogSection = () => {
   const regularPosts = blogPosts.filter(post => !post.featured);
 
   return (
-    <section id="blog" className="py-32 relative overflow-hidden">
+    <section id="blog" className="py-20 relative overflow-hidden">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />

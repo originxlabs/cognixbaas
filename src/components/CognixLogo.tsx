@@ -36,170 +36,67 @@ const CognixLogo = ({
 
   return (
     <div className={cn("flex items-center gap-3", className)}>
-      {/* Logo Mark - Premium Hexagonal Design */}
+      {/* Logo Mark - Interlocking Monoline Symbol */}
       <div className={cn("relative", sizeClasses[size])}>
-        {/* Subtle glow effect */}
-        <div className="absolute inset-0 rounded-lg bg-primary/20 blur-xl opacity-60" />
-        
-        {/* Main logo SVG */}
+        {/* Main logo SVG - Inspired by the reference with interlocking flowing shape */}
         <svg
           viewBox="0 0 48 48"
           className="relative w-full h-full"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <defs>
-            {/* Primary gradient - Electric Cyan */}
-            <linearGradient id="cognix-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="hsl(var(--primary))" />
-              <stop offset="100%" stopColor="hsl(var(--primary) / 0.7)" />
-            </linearGradient>
-            
-            {/* Glow filter */}
-            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
-
-          {/* Background hexagon - outer shell */}
+          {/* Single continuous interlocking path - abstract flowing shape */}
           <path
-            d="M24 4L42 14V34L24 44L6 34V14L24 4Z"
-            fill="none"
-            stroke={variant === "monochrome" ? "currentColor" : "url(#cognix-gradient)"}
-            strokeWidth="1.5"
+            d="M24 6
+               L24 6
+               C32 6 38 12 38 20
+               L38 20
+               C38 24 36 27 33 29
+               L26 34
+               C24 35.5 24 37 26 38
+               L33 42
+               C36 44 32 48 28 46
+               L18 40
+               C14 38 12 34 12 30
+               L12 28
+               C12 24 14 21 18 19
+               L25 14
+               C27 12.5 27 11 25 10
+               L18 6
+               C15 4 19 0 23 2
+               L24 2.5"
+            stroke={variant === "monochrome" ? "currentColor" : "hsl(var(--foreground))"}
+            strokeWidth="3.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
-            className="opacity-30"
+            fill="none"
           />
-
-          {/* Inner hexagon - main shape */}
+          
+          {/* Second interlocking element - creates the woven effect */}
           <path
-            d="M24 8L38 16V32L24 40L10 32V16L24 8Z"
-            fill="none"
-            stroke={variant === "monochrome" ? "currentColor" : "url(#cognix-gradient)"}
-            strokeWidth="2"
+            d="M24 42
+               L24 42
+               C16 42 10 36 10 28
+               L10 28
+               C10 24 12 21 15 19
+               L22 14
+               C24 12.5 24 11 22 10
+               L15 6
+               C12 4 16 0 20 2
+               L30 8
+               C34 10 36 14 36 18
+               L36 20
+               C36 24 34 27 30 29
+               L23 34
+               C21 35.5 21 37 23 38
+               L30 42
+               C33 44 29 48 25 46
+               L24 45.5"
+            stroke={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
+            strokeWidth="3.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
-          />
-
-          {/* Connection path 1 - Top right */}
-          <line
-            x1="24"
-            y1="24"
-            x2="36"
-            y2="18"
-            stroke={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            className="opacity-80"
-          />
-
-          {/* Connection path 2 - Bottom right */}
-          <line
-            x1="24"
-            y1="24"
-            x2="36"
-            y2="30"
-            stroke={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            className="opacity-80"
-          />
-
-          {/* Connection path 3 - Left */}
-          <line
-            x1="24"
-            y1="24"
-            x2="12"
-            y2="24"
-            stroke={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            className="opacity-80"
-          />
-
-          {/* Connection path 4 - Top */}
-          <line
-            x1="24"
-            y1="24"
-            x2="24"
-            y2="12"
-            stroke={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            className="opacity-60"
-          />
-
-          {/* Connection path 5 - Bottom */}
-          <line
-            x1="24"
-            y1="24"
-            x2="24"
-            y2="36"
-            stroke={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            className="opacity-60"
-          />
-
-          {/* Outer nodes */}
-          <circle
-            cx="36"
-            cy="18"
-            r="2"
-            fill={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
-            className="opacity-90"
-          />
-          <circle
-            cx="36"
-            cy="30"
-            r="2"
-            fill={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
-            className="opacity-90"
-          />
-          <circle
-            cx="12"
-            cy="24"
-            r="2"
-            fill={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
-            className="opacity-90"
-          />
-          <circle
-            cx="24"
-            cy="12"
-            r="1.5"
-            fill={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
-            className="opacity-70"
-          />
-          <circle
-            cx="24"
-            cy="36"
-            r="1.5"
-            fill={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
-            className="opacity-70"
-          />
-
-          {/* Central nucleus - core */}
-          <circle
-            cx="24"
-            cy="24"
-            r="5"
-            fill={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
-            filter="url(#glow)"
-          />
-          <circle
-            cx="24"
-            cy="24"
-            r="2.5"
-            fill="hsl(var(--background))"
-          />
-          <circle
-            cx="24"
-            cy="24"
-            r="1"
-            fill={variant === "monochrome" ? "currentColor" : "hsl(var(--primary))"}
+            fill="none"
           />
         </svg>
       </div>
@@ -209,7 +106,7 @@ const CognixLogo = ({
         <div className="flex flex-col">
           <span 
             className={cn(
-              "font-bold tracking-[0.15em] text-foreground",
+              "font-bold tracking-[0.2em] text-foreground",
               textSizes[size]
             )}
             style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
@@ -218,7 +115,7 @@ const CognixLogo = ({
           </span>
           <span 
             className={cn(
-              "text-muted-foreground font-medium tracking-[0.2em] uppercase -mt-0.5",
+              "text-muted-foreground font-medium tracking-[0.25em] uppercase -mt-0.5",
               subtextSizes[size]
             )}
           >

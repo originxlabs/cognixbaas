@@ -1,30 +1,31 @@
 import { Github, Twitter, Linkedin, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import CognixLogo from './CognixLogo';
 
 const Footer = () => {
   const links = {
     product: [
-      { label: 'Features', href: '#features' },
-      { label: 'Technology', href: '#technology' },
-      { label: 'Enterprise', href: '#enterprise' },
-      { label: 'Pricing', href: '#' },
+      { label: 'Features', href: '/#features' },
+      { label: 'Technology', href: '/#technology' },
+      { label: 'Enterprise', href: '/#enterprise' },
+      { label: 'Pricing', href: '/pricing', isRoute: true },
     ],
     resources: [
-      { label: 'Documentation', href: '#' },
-      { label: 'API Reference', href: '#' },
-      { label: 'Blog', href: '#' },
-      { label: 'Changelog', href: '#' },
+      { label: 'Documentation', href: '/docs', isRoute: true },
+      { label: 'API Reference', href: '/docs', isRoute: true },
+      { label: 'Blog', href: '/blog', isRoute: true },
+      { label: 'Changelog', href: '/blog', isRoute: true },
     ],
     company: [
-      { label: 'About CropXon', href: '#' },
-      { label: 'Careers', href: '#' },
-      { label: 'Contact', href: '#' },
-      { label: 'Press', href: '#' },
+      { label: 'About CropXon', href: '/about', isRoute: true },
+      { label: 'Careers', href: '/contact', isRoute: true },
+      { label: 'Contact', href: '/contact', isRoute: true },
+      { label: 'Press', href: '/contact', isRoute: true },
     ],
     legal: [
-      { label: 'Privacy Policy', href: '#' },
-      { label: 'Terms of Service', href: '#' },
-      { label: 'Cookie Policy', href: '#' },
+      { label: 'Privacy Policy', href: '/privacy', isRoute: true },
+      { label: 'Terms of Service', href: '/terms', isRoute: true },
+      { label: 'Cookie Policy', href: '/privacy', isRoute: true },
     ],
   };
 
@@ -37,24 +38,24 @@ const Footer = () => {
 
   return (
     <footer className="border-t border-border bg-card/50">
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid lg:grid-cols-6 gap-12">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid lg:grid-cols-6 gap-10">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <CognixLogo className="mb-6" />
-            <p className="text-muted-foreground text-sm leading-relaxed mb-6 max-w-sm">
+            <CognixLogo className="mb-4" />
+            <p className="text-muted-foreground text-sm leading-relaxed mb-4 max-w-sm">
               Reimagining backend development with intelligent systems. 
               Building the future where great backends write themselves.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               {socialLinks.map((social) => (
                 <a
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
-                  className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-secondary/80 transition-colors"
+                  className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-secondary/80 transition-colors"
                 >
-                  <social.icon className="w-5 h-5" />
+                  <social.icon className="w-4 h-4" />
                 </a>
               ))}
             </div>
@@ -62,64 +63,100 @@ const Footer = () => {
 
           {/* Links */}
           <div>
-            <h4 className="font-bold text-foreground mb-4">Product</h4>
-            <ul className="space-y-3">
+            <h4 className="font-bold text-foreground mb-3 text-sm">Product</h4>
+            <ul className="space-y-2">
               {links.product.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.label}
-                  </a>
+                  {link.isRoute ? (
+                    <Link
+                      to={link.href}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold text-foreground mb-4">Resources</h4>
-            <ul className="space-y-3">
+            <h4 className="font-bold text-foreground mb-3 text-sm">Resources</h4>
+            <ul className="space-y-2">
               {links.resources.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.label}
-                  </a>
+                  {link.isRoute ? (
+                    <Link
+                      to={link.href}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold text-foreground mb-4">Company</h4>
-            <ul className="space-y-3">
+            <h4 className="font-bold text-foreground mb-3 text-sm">Company</h4>
+            <ul className="space-y-2">
               {links.company.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.label}
-                  </a>
+                  {link.isRoute ? (
+                    <Link
+                      to={link.href}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold text-foreground mb-4">Legal</h4>
-            <ul className="space-y-3">
+            <h4 className="font-bold text-foreground mb-3 text-sm">Legal</h4>
+            <ul className="space-y-2">
               {links.legal.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.label}
-                  </a>
+                  {link.isRoute ? (
+                    <Link
+                      to={link.href}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
@@ -127,12 +164,12 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">
+        <div className="mt-10 pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-3">
+          <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} CropXon Innovations Pvt Ltd. All rights reserved.
           </p>
-          <p className="text-sm text-muted-foreground">
-            Early access contact: <a href="mailto:early@cognix.dev" className="text-primary hover:underline">early@cognix.dev</a>
+          <p className="text-xs text-muted-foreground">
+            Early access: <a href="mailto:early@cognix.dev" className="text-primary hover:underline">early@cognix.dev</a>
           </p>
         </div>
       </div>
