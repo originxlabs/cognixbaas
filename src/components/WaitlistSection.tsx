@@ -72,7 +72,7 @@ const WaitlistSection = () => {
   ];
 
   return (
-    <section id="waitlist" className="py-32 relative overflow-hidden">
+    <section id="waitlist" className="py-20 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl" />

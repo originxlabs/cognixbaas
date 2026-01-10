@@ -87,7 +87,7 @@ const itemVariants = {
 
 const AgentsSection = () => {
   return (
-    <section id="agents" className="py-32 relative overflow-hidden">
+    <section id="agents" className="py-20 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-hero-glow opacity-30" />
       

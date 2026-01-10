@@ -21,7 +21,7 @@ const LearningSection = () => {
   ];
 
   return (
-    <section className="py-32 relative">
+    <section className="py-20 relative">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
