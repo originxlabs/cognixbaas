@@ -14,6 +14,13 @@ import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
+import DashboardLayout from "./components/dashboard/DashboardLayout";
+import DashboardOverview from "./pages/dashboard/DashboardOverview";
+import DashboardPrompt from "./pages/dashboard/DashboardPrompt";
+import DashboardTasks from "./pages/dashboard/DashboardTasks";
+import DashboardArchitecture from "./pages/dashboard/DashboardArchitecture";
+import DashboardAPIs from "./pages/dashboard/DashboardAPIs";
+import DashboardDatabase from "./pages/dashboard/DashboardDatabase";
 
 const queryClient = new QueryClient();
 
@@ -34,7 +41,22 @@ const App = () => (
               <Route path="/contact" element={<Contact />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              
+              {/* Dashboard Routes */}
+              <Route path="/dashboard" element={<DashboardLayout />}>
+                <Route index element={<DashboardOverview />} />
+                <Route path="prompt" element={<DashboardPrompt />} />
+                <Route path="tasks" element={<DashboardTasks />} />
+                <Route path="architecture" element={<DashboardArchitecture />} />
+                <Route path="apis" element={<DashboardAPIs />} />
+                <Route path="database" element={<DashboardDatabase />} />
+                <Route path="agents" element={<DashboardOverview />} />
+                <Route path="github" element={<DashboardOverview />} />
+                <Route path="sandbox" element={<DashboardOverview />} />
+                <Route path="llm" element={<DashboardOverview />} />
+                <Route path="settings" element={<DashboardOverview />} />
+              </Route>
+              
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
