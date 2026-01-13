@@ -3,13 +3,15 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProjectProvider } from "@/contexts/ProjectContext";
 import { AnimatePresence } from "framer-motion";
 import SplashScreen from "@/components/SplashScreen";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import PageTransition from "@/components/PageTransition";
 import Index from "./pages/Index";
 import Documentation from "./pages/Documentation";
 import Blog from "./pages/Blog";
@@ -41,82 +43,99 @@ import DashboardLLM from "./pages/dashboard/DashboardLLM";
 
 const queryClient = new QueryClient();
 
+// Animated Routes wrapper for page transitions
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+        <Route path="/product" element={<PageTransition><Product /></PageTransition>} />
+        <Route path="/architecture" element={<PageTransition><Architecture /></PageTransition>} />
+        <Route path="/security" element={<PageTransition><Security /></PageTransition>} />
+        <Route path="/docs" element={<PageTransition><Documentation /></PageTransition>} />
+        <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
+        <Route path="/pricing" element={<PageTransition><Pricing /></PageTransition>} />
+        <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+        <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+        <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
+        <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
+        <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
+        <Route path="/onboarding" element={<PageTransition><Onboarding /></PageTransition>} />
+        <Route path="/whitepaper" element={<PageTransition><Whitepaper /></PageTransition>} />
+        
+        {/* Dashboard Routes with Project Context */}
+        <Route path="/dashboard/*" element={
+          <ProjectProvider>
+            <Routes>
+              <Route element={<DashboardLayoutNew />}>
+                <Route index element={<DashboardProjects />} />
+                <Route path="settings" element={<DashboardSettings />} />
+                
+                {/* Project-specific routes */}
+                <Route path="project/:projectId" element={<DashboardProjectOverview />} />
+                <Route path="project/:projectId/prompt" element={<DashboardPromptConfig />} />
+                <Route path="project/:projectId/tasks" element={<DashboardTasksKanban />} />
+                <Route path="project/:projectId/architecture" element={<DashboardArchitecture />} />
+                <Route path="project/:projectId/apis" element={<DashboardAPIs />} />
+                <Route path="project/:projectId/database" element={<DashboardDatabase />} />
+                <Route path="project/:projectId/agents" element={<DashboardAgentsLive />} />
+                <Route path="project/:projectId/github" element={<DashboardGitHub />} />
+                <Route path="project/:projectId/sandbox" element={<DashboardSandbox />} />
+                <Route path="project/:projectId/llm" element={<DashboardLLM />} />
+              </Route>
+            </Routes>
+          </ProjectProvider>
+        } />
+        
+        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+      </Routes>
+    </AnimatePresence>
+  );
+};
+
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
-  const [hasSeenSplash, setHasSeenSplash] = useState(false);
 
   useEffect(() => {
-    const seen = sessionStorage.getItem('cognix-splash-seen');
-    if (seen) {
-      setShowSplash(false);
-      setHasSeenSplash(true);
-    }
+    // Always show splash on page load/refresh for brand experience
+    // You can change this to session-based if needed
+    const timer = setTimeout(() => {
+      // Splash will auto-complete via its own timer
+    }, 100);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleSplashComplete = () => {
     setShowSplash(false);
-    setHasSeenSplash(true);
-    sessionStorage.setItem('cognix-splash-seen', 'true');
   };
 
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="light" storageKey="cognix-theme">
-          <TooltipProvider>
-            <AnimatePresence mode="wait">
-              {showSplash && !hasSeenSplash && (
-                <SplashScreen onComplete={handleSplashComplete} />
+          <ErrorBoundary>
+            <TooltipProvider>
+              <AnimatePresence mode="wait">
+                {showSplash && (
+                  <SplashScreen onComplete={handleSplashComplete} />
+                )}
+              </AnimatePresence>
+              
+              {!showSplash && (
+                <>
+                  <Toaster />
+                  <Sonner />
+                  <BrowserRouter>
+                    <AuthProvider>
+                      <AnimatedRoutes />
+                    </AuthProvider>
+                  </BrowserRouter>
+                </>
               )}
-            </AnimatePresence>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <AuthProvider>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/product" element={<Product />} />
-                <Route path="/architecture" element={<Architecture />} />
-                <Route path="/security" element={<Security />} />
-                <Route path="/docs" element={<Documentation />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/pricing" element={<Pricing />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/onboarding" element={<Onboarding />} />
-                <Route path="/whitepaper" element={<Whitepaper />} />
-                {/* Dashboard Routes with Project Context */}
-                <Route path="/dashboard/*" element={
-                  <ProjectProvider>
-                    <Routes>
-                      <Route element={<DashboardLayoutNew />}>
-                        <Route index element={<DashboardProjects />} />
-                        <Route path="settings" element={<DashboardSettings />} />
-                        
-                        {/* Project-specific routes */}
-                        <Route path="project/:projectId" element={<DashboardProjectOverview />} />
-                        <Route path="project/:projectId/prompt" element={<DashboardPromptConfig />} />
-                        <Route path="project/:projectId/tasks" element={<DashboardTasksKanban />} />
-                        <Route path="project/:projectId/architecture" element={<DashboardArchitecture />} />
-                        <Route path="project/:projectId/apis" element={<DashboardAPIs />} />
-                        <Route path="project/:projectId/database" element={<DashboardDatabase />} />
-                        <Route path="project/:projectId/agents" element={<DashboardAgentsLive />} />
-                        <Route path="project/:projectId/github" element={<DashboardGitHub />} />
-                        <Route path="project/:projectId/sandbox" element={<DashboardSandbox />} />
-                        <Route path="project/:projectId/llm" element={<DashboardLLM />} />
-                      </Route>
-                    </Routes>
-                  </ProjectProvider>
-                } />
-                
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </AuthProvider>
-            </BrowserRouter>
-          </TooltipProvider>
+            </TooltipProvider>
+          </ErrorBoundary>
         </ThemeProvider>
       </QueryClientProvider>
     </HelmetProvider>

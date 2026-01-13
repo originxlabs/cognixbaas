@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { cn } from "@/lib/utils";
 import cognixLogoSvg from "@/assets/cognix-logo.svg";
 
@@ -8,12 +9,12 @@ interface CognixLogoProps {
   variant?: "default" | "monochrome";
 }
 
-const CognixLogo = ({ 
+const CognixLogo = forwardRef<HTMLDivElement, CognixLogoProps>(({ 
   className, 
   size = "md", 
   showText = true,
   variant = "default"
-}: CognixLogoProps) => {
+}, ref) => {
   const sizeClasses = {
     sm: "w-8 h-6",
     md: "w-12 h-8",
@@ -36,7 +37,7 @@ const CognixLogo = ({
   };
 
   return (
-    <div className={cn("flex items-center gap-2.5", className)}>
+    <div ref={ref} className={cn("flex items-center gap-2.5", className)}>
       {/* Logo Image */}
       <div className={cn("relative flex-shrink-0", sizeClasses[size])}>
         <img 
@@ -70,6 +71,8 @@ const CognixLogo = ({
       )}
     </div>
   );
-};
+});
+
+CognixLogo.displayName = "CognixLogo";
 
 export default CognixLogo;

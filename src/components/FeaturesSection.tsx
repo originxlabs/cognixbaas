@@ -90,10 +90,10 @@ const features = [
   {
     icon: Plug,
     title: 'Seamless UI Integration',
-    description: 'Connect Cognix backends to any frontend. Works with Lovable, Rork, React, Flutter, Angular, or any no-code builder.',
+    description: 'Connect Cognix backends to any frontend. Works with React, Next.js, Flutter, Angular, Vue, or any framework.',
     visual: (
       <div className="flex flex-wrap gap-2 text-xs">
-        {['Lovable', 'Rork', 'React', 'Flutter', 'Angular'].map((tech) => (
+        {['React', 'Next.js', 'Flutter', 'Angular', 'Vue'].map((tech) => (
           <span key={tech} className="px-2 py-1 bg-secondary rounded text-muted-foreground">
             {tech}
           </span>
