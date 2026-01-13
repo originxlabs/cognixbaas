@@ -2,7 +2,7 @@
   <!-- Dark background -->
   <rect width="48" height="48" rx="10" fill="#0a0a0f"/>
   
-  <!-- Interlocking flowing shape - First path -->
+  <!-- First interlocking path - white -->
   <path
     d="M24 8
        C30 8 35 13 35 19
@@ -26,7 +26,7 @@
     fill="none"
   />
   
-  <!-- Interlocking flowing shape - Second path (creates woven effect) -->
+  <!-- Second interlocking path - cyan/primary -->
   <path
     d="M24 40
        C18 40 13 35 13 29

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +8,8 @@ import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProjectProvider } from "@/contexts/ProjectContext";
+import { AnimatePresence } from "framer-motion";
+import SplashScreen from "@/components/SplashScreen";
 import Index from "./pages/Index";
 import Documentation from "./pages/Documentation";
 import Blog from "./pages/Blog";
@@ -38,15 +41,38 @@ import DashboardLLM from "./pages/dashboard/DashboardLLM";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="cognix-theme">
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AuthProvider>
+const App = () => {
+  const [showSplash, setShowSplash] = useState(true);
+  const [hasSeenSplash, setHasSeenSplash] = useState(false);
+
+  useEffect(() => {
+    const seen = sessionStorage.getItem('cognix-splash-seen');
+    if (seen) {
+      setShowSplash(false);
+      setHasSeenSplash(true);
+    }
+  }, []);
+
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+    setHasSeenSplash(true);
+    sessionStorage.setItem('cognix-splash-seen', 'true');
+  };
+
+  return (
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="light" storageKey="cognix-theme">
+          <TooltipProvider>
+            <AnimatePresence mode="wait">
+              {showSplash && !hasSeenSplash && (
+                <SplashScreen onComplete={handleSplashComplete} />
+              )}
+            </AnimatePresence>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AuthProvider>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/product" element={<Product />} />
@@ -86,14 +112,15 @@ const App = () => (
                   </ProjectProvider>
                 } />
                 
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AuthProvider>
-          </BrowserRouter>
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  </HelmetProvider>
-);
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </AuthProvider>
+            </BrowserRouter>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
+  );
+};
 
 export default App;
