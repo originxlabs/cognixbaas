@@ -1,58 +1,48 @@
 import { Helmet } from 'react-helmet-async';
-import Header from '@/components/Header';
-import HeroSection from '@/components/HeroSection';
-import AgentsSection from '@/components/AgentsSection';
-import AgentWorkflowVisualization from '@/components/AgentWorkflowVisualization';
-import FeaturesSection from '@/components/FeaturesSection';
-import InteractiveCodeDemo from '@/components/InteractiveCodeDemo';
-import TechnologySection from '@/components/TechnologySection';
-import LearningSection from '@/components/LearningSection';
-import EnterpriseSection from '@/components/EnterpriseSection';
-import BlogSection from '@/components/BlogSection';
-import CountdownSection from '@/components/CountdownSection';
+import EnterpriseHeader from '@/components/EnterpriseHeader';
+import EnterpriseHero from '@/components/EnterpriseHero';
+import EnterpriseFeatures from '@/components/EnterpriseFeatures';
+import EnterpriseAgents from '@/components/EnterpriseAgents';
+import EnterpriseTechnology from '@/components/EnterpriseTechnology';
+import EnterpriseCTA from '@/components/EnterpriseCTA';
 import WaitlistSection from '@/components/WaitlistSection';
-import Footer from '@/components/Footer';
+import EnterpriseFooter from '@/components/EnterpriseFooter';
 
 const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Cognix - AI-Powered Backend-as-a-Service | Build Backends at the Speed of Thought</title>
+        <title>Cognix - AI-Assisted Backend Engineering | Built for Real Systems</title>
         <meta 
           name="description" 
-          content="Design, generate, deploy, and scale production-ready backend systems with intelligent multi-agent workflows. From idea to live API in minutes. By CropXon." 
+          content="AI-assisted backend engineering platform. Production-ready infrastructure with intelligent agent workflows. Human oversight at every step. By Cropxon." 
         />
-        <meta name="keywords" content="backend as a service, AI backend, API generator, microservices, enterprise architecture, multi-agent AI, CropXon" />
+        <meta name="keywords" content="backend engineering, AI backend, API generator, enterprise architecture, modular monolith, Cropxon" />
         <link rel="canonical" href="https://cognix.dev" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Cognix - AI-Powered Backend-as-a-Service" />
-        <meta property="og:description" content="Build backends at the speed of thought with intelligent multi-agent workflows." />
+        <meta property="og:title" content="Cognix - AI-Assisted Backend Engineering" />
+        <meta property="og:description" content="Production-ready backend infrastructure with intelligent agent workflows. Human oversight at every step." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://cognix.dev" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Cognix - AI-Powered Backend-as-a-Service" />
-        <meta name="twitter:description" content="Build backends at the speed of thought with intelligent multi-agent workflows." />
+        <meta name="twitter:title" content="Cognix - AI-Assisted Backend Engineering" />
+        <meta name="twitter:description" content="Production-ready backend infrastructure with intelligent agent workflows. Human oversight at every step." />
       </Helmet>
 
       <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-        <Header />
+        <EnterpriseHeader />
         <main>
-          <HeroSection />
-          <FeaturesSection />
-          <InteractiveCodeDemo />
-          <AgentsSection />
-          <AgentWorkflowVisualization />
-          <TechnologySection />
-          <LearningSection />
-          <EnterpriseSection />
-          <BlogSection />
-          <CountdownSection />
+          <EnterpriseHero />
+          <EnterpriseFeatures />
+          <EnterpriseAgents />
+          <EnterpriseTechnology />
+          <EnterpriseCTA />
           <WaitlistSection />
         </main>
-        <Footer />
+        <EnterpriseFooter />
       </div>
     </>
   );

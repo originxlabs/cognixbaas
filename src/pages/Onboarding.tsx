@@ -33,6 +33,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { COGNIX_AGENTS, AGENT_PIPELINE_ORDER } from '@/config/agents';
 import { AgentPipeline } from '@/components/agents/AgentPipeline';
+import { RealTimeAgentVisualization } from '@/components/agents/RealTimeAgentVisualization';
 
 type OnboardingStep = 
   | 'welcome'
@@ -698,76 +699,43 @@ const Onboarding = () => {
         );
 
       case 'code-generation':
+        // Transform agentLogs to the format expected by RealTimeAgentVisualization
+        const formattedLogs = agentLogs.map((log, index) => ({
+          id: `log-${index}`,
+          agentId: log.agentId,
+          message: log.message,
+          timestamp: log.timestamp,
+          type: 'info' as const,
+        }));
+
         return (
-          <div className="max-w-3xl mx-auto space-y-6">
+          <div className="max-w-5xl mx-auto space-y-6">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground">Code Generation</h2>
-              <p className="text-muted-foreground mt-2">Building your backend infrastructure</p>
+              <p className="text-muted-foreground mt-2">Building your backend infrastructure with specialized agents</p>
             </div>
 
-            {/* Agent Pipeline */}
-            <Card className="bg-card border-border overflow-hidden">
-              <CardContent className="p-4">
-                <AgentPipeline 
-                  currentAgentId={COGNIX_AGENTS[currentAgentIndex]?.id}
-                  completedAgents={completedAgents}
-                  vertical
-                />
-              </CardContent>
-            </Card>
+            {/* Real-Time Agent Visualization */}
+            <RealTimeAgentVisualization
+              isGenerating={isProcessing}
+              currentAgentIndex={currentAgentIndex}
+              completedAgents={completedAgents}
+              progress={generationProgress}
+              logs={formattedLogs}
+            />
 
-            {/* Progress */}
-            <Card className="bg-card border-border">
-              <CardContent className="p-6 space-y-4">
-                <div className="flex items-center gap-3 mb-4">
-                  {isProcessing ? (
-                    <Loader2 className="w-6 h-6 text-primary animate-spin" />
-                  ) : completedAgents.length > 0 ? (
-                    <CheckCircle2 className="w-6 h-6 text-green-500" />
-                  ) : (
-                    <Activity className="w-6 h-6 text-muted-foreground" />
-                  )}
-                  <div>
-                    <p className="font-semibold">
-                      {isProcessing 
-                        ? COGNIX_AGENTS[currentAgentIndex]?.shortName || 'Processing...'
-                        : completedAgents.length > 0 
-                          ? 'Generation Complete'
-                          : 'Ready to generate'
-                      }
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {isProcessing 
-                        ? `Agent ${currentAgentIndex + 1} of ${COGNIX_AGENTS.length}`
-                        : completedAgents.length > 0
-                          ? 'All agents completed'
-                          : 'Click Continue to start'
-                      }
-                    </p>
-                  </div>
-                </div>
-
-                <Progress value={generationProgress} className="h-2" />
-                <p className="text-xs text-muted-foreground text-center">
-                  {Math.round(generationProgress)}% complete
-                </p>
-
-                {/* Agent Logs */}
-                <div className="bg-secondary/30 rounded-lg p-4 font-mono text-xs max-h-[200px] overflow-y-auto space-y-1">
-                  {agentLogs.map((log, i) => {
-                    const agent = COGNIX_AGENTS.find(a => a.id === log.agentId);
-                    return (
-                      <p key={i} className="text-muted-foreground">
-                        <span className={agent?.color || 'text-primary'}>[{agent?.shortName}]</span> {log.message}
-                      </p>
-                    );
-                  })}
-                  {agentLogs.length === 0 && (
-                    <p className="text-muted-foreground">Waiting to start generation...</p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            {/* Additional context when not generating */}
+            {!isProcessing && completedAgents.length === 0 && (
+              <Card className="bg-secondary/20 border-border">
+                <CardContent className="p-6 text-center">
+                  <Activity className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground">
+                    Click <strong>Continue</strong> to start the code generation pipeline. 
+                    Each agent will process your requirements in sequence.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
           </div>
         );
 
