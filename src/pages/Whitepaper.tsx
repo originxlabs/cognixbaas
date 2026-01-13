@@ -52,8 +52,8 @@ import {
 } from '@/components/ui/collapsible';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import EnterpriseHeader from '@/components/EnterpriseHeader';
-import EnterpriseFooter from '@/components/EnterpriseFooter';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { useToast } from '@/hooks/use-toast';
 
 interface WhitepaperSection {
@@ -581,7 +581,7 @@ const Whitepaper = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background">
-        <EnterpriseHeader />
+        <Header />
 
         <main className="pt-24 pb-16">
           <div className="container mx-auto px-4">
@@ -771,7 +771,7 @@ const Whitepaper = () => {
           </div>
         </main>
 
-        <EnterpriseFooter />
+        <Footer />
 
         {/* Download Dialog */}
         <Dialog open={showDownloadDialog} onOpenChange={setShowDownloadDialog}>

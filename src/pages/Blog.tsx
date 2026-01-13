@@ -2,8 +2,8 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, Clock, User, Tag, ArrowRight } from 'lucide-react';
-import EnterpriseHeader from '@/components/EnterpriseHeader';
-import EnterpriseFooter from '@/components/EnterpriseFooter';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 
 const blogPosts = [
@@ -83,7 +83,7 @@ const Blog = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background text-foreground">
-        <EnterpriseHeader />
+        <Header />
         
         <main className="pt-24 pb-16">
           <div className="container mx-auto px-4">
@@ -210,7 +210,7 @@ const Blog = () => {
           </div>
         </main>
 
-        <EnterpriseFooter />
+        <Footer />
       </div>
     </>
   );
