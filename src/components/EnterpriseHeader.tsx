@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CognixLogo from './CognixLogo';
 import { ThemeToggle } from './ThemeToggle';
@@ -70,12 +70,8 @@ const EnterpriseHeader = () => {
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5">
-          <CognixLogo size="sm" showText={false} />
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold tracking-tight text-foreground">COGNIX</span>
-            <span className="text-[9px] text-muted-foreground font-medium tracking-wide uppercase -mt-0.5">by CROPXON</span>
-          </div>
+        <Link to="/" className="flex items-center">
+          <CognixLogo size="sm" />
         </Link>
 
         {/* Desktop Navigation */}

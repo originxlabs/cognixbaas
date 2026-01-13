@@ -52,12 +52,8 @@ const Header = () => {
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5">
-          <CognixLogo size="sm" showText={false} />
-          <div className="flex flex-col">
-            <span className="text-base font-bold tracking-wide gradient-text">COGNIX</span>
-            <span className="text-[8px] text-muted-foreground font-semibold tracking-widest uppercase -mt-0.5">by CROPXON</span>
-          </div>
+        <Link to="/" className="flex items-center">
+          <CognixLogo size="sm" />
         </Link>
 
         {/* Desktop Navigation */}

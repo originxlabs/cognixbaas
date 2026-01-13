@@ -2,19 +2,13 @@ import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import AnimatedHeroBackground from './AnimatedHeroBackground';
 
 const EnterpriseHero = () => {
   return (
-    <section className="relative min-h-[90vh] flex flex-col justify-center pt-20 pb-16">
-      {/* Subtle grid pattern */}
-      <div 
-        className="absolute inset-0 opacity-[0.02]"
-        style={{
-          backgroundImage: `linear-gradient(hsl(var(--foreground)) 1px, transparent 1px),
-                           linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)`,
-          backgroundSize: '80px 80px'
-        }}
-      />
+    <section className="relative min-h-[90vh] flex flex-col justify-center pt-20 pb-16 overflow-hidden">
+      {/* Animated geometric background */}
+      <AnimatedHeroBackground />
 
       {/* Subtle gradient orb */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/[0.03] rounded-full blur-3xl pointer-events-none" />
@@ -29,7 +23,7 @@ const EnterpriseHero = () => {
             className="text-center mb-8"
           >
             <span className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground bg-secondary/50 px-3 py-1.5 rounded-full border border-border/50">
-              <span className="w-1.5 h-1.5 bg-primary rounded-full" />
+              <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
               Now in Private Beta
             </span>
           </motion.div>
@@ -93,7 +87,7 @@ const EnterpriseHero = () => {
             transition={{ duration: 0.7, delay: 0.4 }}
             className="relative"
           >
-            <div className="bg-card/50 border border-border rounded-xl p-6 md:p-8">
+            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-6 md:p-8">
               {/* Terminal header */}
               <div className="flex items-center gap-2 mb-6">
                 <div className="w-3 h-3 rounded-full bg-red-500/60" />
@@ -105,11 +99,11 @@ const EnterpriseHero = () => {
               {/* Architecture visualization */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 {[
-                  { label: 'Requirements', sublabel: 'Natural Language' },
-                  { label: 'Analysis', sublabel: 'AI Agents' },
-                  { label: 'Architecture', sublabel: 'Human Review' },
-                  { label: 'Generation', sublabel: 'Code + Tests' },
-                  { label: 'Deployment', sublabel: 'Sandbox → Prod' },
+                  { label: 'Requirements', sublabel: 'Natural Language', icon: '📝' },
+                  { label: 'Analysis', sublabel: 'AI Agents', icon: '🔍' },
+                  { label: 'Architecture', sublabel: 'Human Review', icon: '🏗️' },
+                  { label: 'Generation', sublabel: 'Code + Tests', icon: '⚡' },
+                  { label: 'Deployment', sublabel: 'Sandbox → Prod', icon: '🚀' },
                 ].map((step, index) => (
                   <motion.div
                     key={step.label}
@@ -118,13 +112,19 @@ const EnterpriseHero = () => {
                     transition={{ duration: 0.3, delay: 0.6 + index * 0.1 }}
                     className="relative"
                   >
-                    <div className="bg-secondary/30 border border-border/50 rounded-lg p-4 text-center h-full">
+                    <div className="bg-secondary/30 border border-border/50 rounded-lg p-4 text-center h-full hover:border-primary/30 transition-colors">
+                      <div className="text-lg mb-1">{step.icon}</div>
                       <div className="text-xs font-mono text-primary mb-1">0{index + 1}</div>
                       <div className="text-sm font-medium text-foreground">{step.label}</div>
                       <div className="text-xs text-muted-foreground mt-1">{step.sublabel}</div>
                     </div>
                     {index < 4 && (
-                      <div className="hidden md:block absolute top-1/2 -right-2 w-4 h-px bg-border" />
+                      <motion.div 
+                        className="hidden md:block absolute top-1/2 -right-2 w-4 h-px bg-border"
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        transition={{ duration: 0.3, delay: 0.8 + index * 0.1 }}
+                      />
                     )}
                   </motion.div>
                 ))}
@@ -143,13 +143,18 @@ const EnterpriseHero = () => {
                   <span className="text-muted-foreground/50">--prompt</span>
                   <span className="text-foreground">"E-commerce API with auth, products, orders"</span>
                 </div>
-                <div className="mt-2 text-muted-foreground">
+                <motion.div 
+                  className="mt-2 text-muted-foreground"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 1.5 }}
+                >
                   <span className="text-green-500">✓</span> 14 agents initialized
                   <span className="mx-2">·</span>
                   <span className="text-green-500">✓</span> Architecture approved
                   <span className="mx-2">·</span>
                   <span className="text-green-500">✓</span> 47 endpoints generated
-                </div>
+                </motion.div>
               </motion.div>
             </div>
           </motion.div>
