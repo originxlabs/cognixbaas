@@ -80,9 +80,9 @@ const whitepapers: Whitepaper[] = [
     version: '1.0.0',
     title: 'COGNIX v1.0.0',
     subtitle: 'An AI-Assisted Backend Engineering Platform with Human Control',
-    author: 'Abhi',
+    author: 'Abhishek Panda (Founder of Cropxon)',
     status: 'preview',
-    date: 'January 2026',
+    date: 'January 13, 2026',
     sections: [
       {
         id: 'executive-summary',

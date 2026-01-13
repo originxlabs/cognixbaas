@@ -41,10 +41,10 @@ const EnterpriseHeader = () => {
   }, []);
 
   const productLinks = [
-    { title: 'Overview', description: 'AI-assisted backend engineering platform', href: '/#features' },
-    { title: 'Architecture', description: 'Modular Monolith design patterns', href: '/#technology' },
+    { title: 'Overview', description: 'AI-assisted backend engineering platform', href: '/product' },
+    { title: 'Architecture', description: 'Modular Monolith design patterns', href: '/architecture' },
     { title: 'Agent Pipeline', description: '14 specialized engineering agents', href: '/#agents' },
-    { title: 'Security', description: 'Enterprise-grade security defaults', href: '/#enterprise' },
+    { title: 'Security', description: 'Enterprise-grade security defaults', href: '/security' },
   ];
 
   const developerLinks = [

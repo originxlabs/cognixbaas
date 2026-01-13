@@ -18,6 +18,9 @@ import Terms from "./pages/Terms";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import Whitepaper from "./pages/Whitepaper";
+import Product from "./pages/Product";
+import Architecture from "./pages/Architecture";
+import Security from "./pages/Security";
 import NotFound from "./pages/NotFound";
 import DashboardLayoutNew from "./components/dashboard/DashboardLayoutNew";
 import DashboardProjects from "./pages/dashboard/DashboardProjects";
@@ -38,7 +41,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="dark" storageKey="cognix-theme">
+      <ThemeProvider defaultTheme="light" storageKey="cognix-theme">
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -46,6 +49,9 @@ const App = () => (
             <AuthProvider>
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/product" element={<Product />} />
+                <Route path="/architecture" element={<Architecture />} />
+                <Route path="/security" element={<Security />} />
                 <Route path="/docs" element={<Documentation />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/pricing" element={<Pricing />} />
