@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { AuthProvider } from "@/hooks/useAuth";
+import { ProjectProvider } from "@/contexts/ProjectContext";
 import Index from "./pages/Index";
 import Documentation from "./pages/Documentation";
 import Blog from "./pages/Blog";
@@ -13,15 +15,18 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
-import DashboardLayout from "./components/dashboard/DashboardLayout";
-import DashboardOverview from "./pages/dashboard/DashboardOverview";
+import DashboardLayoutNew from "./components/dashboard/DashboardLayoutNew";
+import DashboardProjects from "./pages/dashboard/DashboardProjects";
+import DashboardSettings from "./pages/dashboard/DashboardSettings";
+import DashboardProjectOverview from "./pages/dashboard/DashboardProjectOverview";
 import DashboardPrompt from "./pages/dashboard/DashboardPrompt";
-import DashboardTasks from "./pages/dashboard/DashboardTasks";
+import DashboardTasksKanban from "./pages/dashboard/DashboardTasksKanban";
 import DashboardArchitecture from "./pages/dashboard/DashboardArchitecture";
 import DashboardAPIs from "./pages/dashboard/DashboardAPIs";
 import DashboardDatabase from "./pages/dashboard/DashboardDatabase";
-import DashboardAgents from "./pages/dashboard/DashboardAgents";
+import DashboardAgentsLive from "./pages/dashboard/DashboardAgentsLive";
 import DashboardGitHub from "./pages/dashboard/DashboardGitHub";
 import DashboardSandbox from "./pages/dashboard/DashboardSandbox";
 import DashboardLLM from "./pages/dashboard/DashboardLLM";
@@ -36,33 +41,45 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/docs" element={<Documentation />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/pricing" element={<Pricing />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/terms" element={<Terms />} />
-              
-              {/* Dashboard Routes */}
-              <Route path="/dashboard" element={<DashboardLayout />}>
-                <Route index element={<DashboardOverview />} />
-                <Route path="prompt" element={<DashboardPrompt />} />
-                <Route path="tasks" element={<DashboardTasks />} />
-                <Route path="architecture" element={<DashboardArchitecture />} />
-                <Route path="apis" element={<DashboardAPIs />} />
-                <Route path="database" element={<DashboardDatabase />} />
-                <Route path="agents" element={<DashboardAgents />} />
-                <Route path="github" element={<DashboardGitHub />} />
-                <Route path="sandbox" element={<DashboardSandbox />} />
-                <Route path="llm" element={<DashboardLLM />} />
-                <Route path="settings" element={<DashboardOverview />} />
-              </Route>
-              
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <AuthProvider>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/docs" element={<Documentation />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/pricing" element={<Pricing />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/auth" element={<Auth />} />
+                
+                {/* Dashboard Routes with Project Context */}
+                <Route path="/dashboard/*" element={
+                  <ProjectProvider>
+                    <Routes>
+                      <Route element={<DashboardLayoutNew />}>
+                        <Route index element={<DashboardProjects />} />
+                        <Route path="settings" element={<DashboardSettings />} />
+                        
+                        {/* Project-specific routes */}
+                        <Route path="project/:projectId" element={<DashboardProjectOverview />} />
+                        <Route path="project/:projectId/prompt" element={<DashboardPrompt />} />
+                        <Route path="project/:projectId/tasks" element={<DashboardTasksKanban />} />
+                        <Route path="project/:projectId/architecture" element={<DashboardArchitecture />} />
+                        <Route path="project/:projectId/apis" element={<DashboardAPIs />} />
+                        <Route path="project/:projectId/database" element={<DashboardDatabase />} />
+                        <Route path="project/:projectId/agents" element={<DashboardAgentsLive />} />
+                        <Route path="project/:projectId/github" element={<DashboardGitHub />} />
+                        <Route path="project/:projectId/sandbox" element={<DashboardSandbox />} />
+                        <Route path="project/:projectId/llm" element={<DashboardLLM />} />
+                      </Route>
+                    </Routes>
+                  </ProjectProvider>
+                } />
+                
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AuthProvider>
           </BrowserRouter>
         </TooltipProvider>
       </ThemeProvider>
