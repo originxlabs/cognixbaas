@@ -6,14 +6,23 @@ import {
   Unlock,
   ChevronRight,
   Search,
-  ExternalLink
+  ExternalLink,
+  Play,
+  X
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { useDashboardStore } from '@/stores/dashboardStore';
+import { ApiTester } from '@/components/dashboard/ApiTester';
 
 const methodColors = {
   GET: 'bg-green-500/10 text-green-500 border-green-500/30',
@@ -28,6 +37,7 @@ const DashboardAPIs = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedModule, setSelectedModule] = useState<string>('all');
   const [expandedEndpoint, setExpandedEndpoint] = useState<string | null>(null);
+  const [testingEndpoint, setTestingEndpoint] = useState<any | null>(null);
 
   const filteredEndpoints = endpoints.filter((endpoint) => {
     const matchesSearch = 
@@ -148,7 +158,16 @@ const DashboardAPIs = () => {
                           </p>
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline">
+                          <Button 
+                            size="sm" 
+                            variant="default"
+                            className="gap-1.5"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTestingEndpoint(endpoint);
+                            }}
+                          >
+                            <Play className="w-3.5 h-3.5" />
                             Try it out
                           </Button>
                           <Button size="sm" variant="ghost">
@@ -257,6 +276,26 @@ components:
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* API Tester Dialog */}
+      <Dialog open={!!testingEndpoint} onOpenChange={() => setTestingEndpoint(null)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <Badge 
+                variant="outline" 
+                className={`font-mono ${testingEndpoint ? methodColors[testingEndpoint.method] : ''}`}
+              >
+                {testingEndpoint?.method}
+              </Badge>
+              <code className="text-sm">{testingEndpoint?.path}</code>
+            </DialogTitle>
+          </DialogHeader>
+          {testingEndpoint && (
+            <ApiTester endpoint={testingEndpoint} />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
