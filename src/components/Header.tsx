@@ -99,7 +99,7 @@ const Header = () => {
             </Button>
           ) : (
             <Button variant="glow" size="sm" asChild className="gap-2">
-              <Link to="/auth">
+              <Link to="/onboarding">
                 <Sparkles className="w-4 h-4" />
                 Try Cognix
                 <Badge variant="secondary" className="ml-1 text-[10px] px-1.5 py-0">MVP</Badge>
@@ -154,7 +154,7 @@ const Header = () => {
               Documentation
             </Link>
             <Button variant="glow" className="mt-3 gap-2" asChild>
-              <Link to={isLoggedIn ? "/dashboard" : "/auth"} onClick={() => setIsMobileMenuOpen(false)}>
+              <Link to={isLoggedIn ? "/dashboard" : "/onboarding"} onClick={() => setIsMobileMenuOpen(false)}>
                 <Sparkles className="w-4 h-4" />
                 Try Cognix
                 <Badge variant="secondary" className="ml-1 text-[10px] px-1.5 py-0">MVP</Badge>
