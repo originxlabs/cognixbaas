@@ -1,4 +1,4 @@
-import { Github, Twitter, Linkedin, Mail } from 'lucide-react';
+import { Github, Twitter, Linkedin, Mail, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import CognixLogo from './CognixLogo';
 import { Badge } from './ui/badge';
@@ -13,9 +13,9 @@ const Footer = () => {
     ],
     resources: [
       { label: 'Documentation', href: '/docs', isRoute: true },
-      { label: 'API Reference', href: '/docs', isRoute: true },
+      { label: 'Whitepapers', href: '/whitepaper', isRoute: true },
       { label: 'Blog', href: '/blog', isRoute: true },
-      { label: 'Changelog', href: '/blog', isRoute: true },
+      { label: 'API Reference', href: '/docs', isRoute: true },
     ],
     company: [
       { label: 'About CropXon', href: '/about', isRoute: true },
