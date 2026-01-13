@@ -21,6 +21,10 @@ import DashboardTasks from "./pages/dashboard/DashboardTasks";
 import DashboardArchitecture from "./pages/dashboard/DashboardArchitecture";
 import DashboardAPIs from "./pages/dashboard/DashboardAPIs";
 import DashboardDatabase from "./pages/dashboard/DashboardDatabase";
+import DashboardAgents from "./pages/dashboard/DashboardAgents";
+import DashboardGitHub from "./pages/dashboard/DashboardGitHub";
+import DashboardSandbox from "./pages/dashboard/DashboardSandbox";
+import DashboardLLM from "./pages/dashboard/DashboardLLM";
 
 const queryClient = new QueryClient();
 
@@ -50,10 +54,10 @@ const App = () => (
                 <Route path="architecture" element={<DashboardArchitecture />} />
                 <Route path="apis" element={<DashboardAPIs />} />
                 <Route path="database" element={<DashboardDatabase />} />
-                <Route path="agents" element={<DashboardOverview />} />
-                <Route path="github" element={<DashboardOverview />} />
-                <Route path="sandbox" element={<DashboardOverview />} />
-                <Route path="llm" element={<DashboardOverview />} />
+                <Route path="agents" element={<DashboardAgents />} />
+                <Route path="github" element={<DashboardGitHub />} />
+                <Route path="sandbox" element={<DashboardSandbox />} />
+                <Route path="llm" element={<DashboardLLM />} />
                 <Route path="settings" element={<DashboardOverview />} />
               </Route>
               
