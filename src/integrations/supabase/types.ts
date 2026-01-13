@@ -14,6 +14,343 @@ export type Database = {
   }
   public: {
     Tables: {
+      accounts: {
+        Row: {
+          created_at: string
+          id: string
+          max_projects: number
+          name: string
+          plan: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          max_projects?: number
+          name: string
+          plan?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          max_projects?: number
+          name?: string
+          plan?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      agent_activities: {
+        Row: {
+          action: string
+          agent_name: string
+          created_at: string
+          details: string | null
+          id: string
+          project_id: string
+          task_id: string | null
+        }
+        Insert: {
+          action: string
+          agent_name: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          project_id: string
+          task_id?: string | null
+        }
+        Update: {
+          action?: string
+          agent_name?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          project_id?: string
+          task_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_activities_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_activities_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "project_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      llm_providers: {
+        Row: {
+          account_id: string
+          api_key_encrypted: string | null
+          created_at: string
+          id: string
+          provider: string
+          updated_at: string
+          usage_count: number
+        }
+        Insert: {
+          account_id: string
+          api_key_encrypted?: string | null
+          created_at?: string
+          id?: string
+          provider: string
+          updated_at?: string
+          usage_count?: number
+        }
+        Update: {
+          account_id?: string
+          api_key_encrypted?: string | null
+          created_at?: string
+          id?: string
+          provider?: string
+          updated_at?: string
+          usage_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "llm_providers_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_endpoints: {
+        Row: {
+          authenticated: boolean | null
+          created_at: string
+          description: string | null
+          id: string
+          method: string
+          module: string
+          path: string
+          project_id: string
+        }
+        Insert: {
+          authenticated?: boolean | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          method: string
+          module: string
+          path: string
+          project_id: string
+        }
+        Update: {
+          authenticated?: boolean | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          method?: string
+          module?: string
+          path?: string
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_endpoints_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_modules: {
+        Row: {
+          created_at: string
+          dependencies: string[] | null
+          description: string | null
+          endpoints_count: number
+          id: string
+          name: string
+          project_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dependencies?: string[] | null
+          description?: string | null
+          endpoints_count?: number
+          id?: string
+          name: string
+          project_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dependencies?: string[] | null
+          description?: string | null
+          endpoints_count?: number
+          id?: string
+          name?: string
+          project_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_modules_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_tasks: {
+        Row: {
+          assigned_agent: string | null
+          created_at: string
+          id: string
+          module: string
+          position: number
+          project_id: string
+          status: string
+          task_code: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_agent?: string | null
+          created_at?: string
+          id?: string
+          module: string
+          position?: number
+          project_id: string
+          status?: string
+          task_code: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_agent?: string | null
+          created_at?: string
+          id?: string
+          module?: string
+          position?: number
+          project_id?: string
+          status?: string
+          task_code?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          account_id: string
+          auth_method: string | null
+          backend_type: string
+          created_at: string
+          custom_features: string[] | null
+          database_type: string
+          description: string | null
+          entities: string[] | null
+          generation_step: string | null
+          github_branch: string | null
+          github_connected: boolean | null
+          github_last_sync: string | null
+          github_repo: string | null
+          id: string
+          is_generating: boolean | null
+          last_run_at: string | null
+          multi_tenant: boolean | null
+          name: string
+          payments: string | null
+          prompt: string | null
+          sandbox_url: string | null
+          short_code: string
+          status: string
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          account_id: string
+          auth_method?: string | null
+          backend_type?: string
+          created_at?: string
+          custom_features?: string[] | null
+          database_type?: string
+          description?: string | null
+          entities?: string[] | null
+          generation_step?: string | null
+          github_branch?: string | null
+          github_connected?: boolean | null
+          github_last_sync?: string | null
+          github_repo?: string | null
+          id?: string
+          is_generating?: boolean | null
+          last_run_at?: string | null
+          multi_tenant?: boolean | null
+          name: string
+          payments?: string | null
+          prompt?: string | null
+          sandbox_url?: string | null
+          short_code: string
+          status?: string
+          updated_at?: string
+          version?: string
+        }
+        Update: {
+          account_id?: string
+          auth_method?: string | null
+          backend_type?: string
+          created_at?: string
+          custom_features?: string[] | null
+          database_type?: string
+          description?: string | null
+          entities?: string[] | null
+          generation_step?: string | null
+          github_branch?: string | null
+          github_connected?: boolean | null
+          github_last_sync?: string | null
+          github_repo?: string | null
+          id?: string
+          is_generating?: boolean | null
+          last_run_at?: string | null
+          multi_tenant?: boolean | null
+          name?: string
+          payments?: string | null
+          prompt?: string | null
+          sandbox_url?: string | null
+          short_code?: string
+          status?: string
+          updated_at?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       waitlist_signups: {
         Row: {
           created_at: string
