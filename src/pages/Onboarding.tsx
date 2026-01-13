@@ -4,29 +4,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowRight, 
   ArrowLeft, 
-  Check, 
   Layers, 
-  Code2, 
   Terminal,
-  Database,
-  Shield,
-  CreditCard,
-  Users,
-  GitBranch,
-  Rocket,
-  Server,
-  Zap,
-  CheckCircle2,
-  Clock,
-  Circle,
   Plus,
   X,
   Loader2,
   Globe,
   FileCode,
-  Activity
+  Activity,
+  Rocket,
+  CheckCircle2,
+  Circle,
+  Clock,
+  Ban
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -37,9 +29,10 @@ import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/hooks/useAuth';
 import { useProjects } from '@/hooks/useProjects';
-import { useProjectModules } from '@/hooks/useProjectModules';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { COGNIX_AGENTS, AGENT_PIPELINE_ORDER } from '@/config/agents';
+import { AgentPipeline } from '@/components/agents/AgentPipeline';
 
 type OnboardingStep = 
   | 'welcome'
@@ -55,25 +48,25 @@ type OnboardingStep =
   | 'github-integration'
   | 'completion';
 
-const steps: { id: OnboardingStep; label: string; description: string }[] = [
+const steps: { id: OnboardingStep; label: string; description: string; agentId?: string }[] = [
   { id: 'welcome', label: 'Welcome', description: 'Introduction to Cognix' },
-  { id: 'project-setup', label: 'Project Setup', description: 'Configure your project' },
-  { id: 'prompt-input', label: 'Requirements', description: 'Describe your backend' },
-  { id: 'requirement-analysis', label: 'Analysis', description: 'Structured interpretation' },
-  { id: 'clarifications', label: 'Clarifications', description: 'Confirm preferences' },
-  { id: 'engineering-plan', label: 'Engineering Plan', description: 'Task breakdown' },
-  { id: 'architecture-review', label: 'Architecture', description: 'Module structure' },
+  { id: 'project-setup', label: 'Project Setup', description: 'Configure your project', agentId: 'scaffolding' },
+  { id: 'prompt-input', label: 'Requirements', description: 'Describe your backend', agentId: 'requirement-analyzer' },
+  { id: 'requirement-analysis', label: 'Analysis', description: 'Structured interpretation', agentId: 'requirement-analyzer' },
+  { id: 'clarifications', label: 'Clarifications', description: 'Confirm preferences', agentId: 'clarification' },
+  { id: 'engineering-plan', label: 'Engineering Plan', description: 'Task breakdown', agentId: 'task-planner' },
+  { id: 'architecture-review', label: 'Architecture', description: 'Module structure', agentId: 'architecture-designer' },
   { id: 'code-generation', label: 'Generation', description: 'Building your backend' },
-  { id: 'api-preview', label: 'API Preview', description: 'OpenAPI specification' },
-  { id: 'sandbox-deployment', label: 'Deployment', description: 'Live sandbox URL' },
-  { id: 'github-integration', label: 'GitHub', description: 'Repository sync' },
+  { id: 'api-preview', label: 'API Preview', description: 'OpenAPI specification', agentId: 'documentation' },
+  { id: 'sandbox-deployment', label: 'Deployment', description: 'Live sandbox URL', agentId: 'sandbox-deploy' },
+  { id: 'github-integration', label: 'GitHub', description: 'Repository sync', agentId: 'github-sync' },
   { id: 'completion', label: 'Complete', description: 'Launch dashboard' },
 ];
 
 const Onboarding = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { createProject, account } = useProjects();
+  const { createProject } = useProjects();
   const { toast } = useToast();
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -106,10 +99,14 @@ const Onboarding = () => {
 
   // Generation progress
   const [generationProgress, setGenerationProgress] = useState(0);
-  const [currentAgent, setCurrentAgent] = useState('');
-  const [agentLogs, setAgentLogs] = useState<string[]>([]);
+  const [currentAgentIndex, setCurrentAgentIndex] = useState(0);
+  const [completedAgents, setCompletedAgents] = useState<string[]>([]);
+  const [agentLogs, setAgentLogs] = useState<{ agentId: string; message: string; timestamp: Date }[]>([]);
 
   const currentStep = steps[currentStepIndex];
+  const currentStepAgent = currentStep.agentId 
+    ? COGNIX_AGENTS.find(a => a.id === currentStep.agentId) 
+    : null;
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -147,7 +144,7 @@ const Onboarding = () => {
 
     // Handle code generation step
     if (currentStep.id === 'engineering-plan') {
-      await simulateGeneration();
+      await runAgentPipeline();
     }
 
     if (currentStepIndex < steps.length - 1) {
@@ -172,33 +169,49 @@ const Onboarding = () => {
     setEntities(entities.filter(e => e !== entity));
   };
 
-  const simulateGeneration = async () => {
+  const runAgentPipeline = async () => {
     if (!createdProject) return;
 
     setIsProcessing(true);
-    const agents = [
-      { name: 'Architect Agent', action: 'Analyzing requirements and defining module structure' },
-      { name: 'Database Agent', action: 'Generating entity models and migrations' },
-      { name: 'Security Agent', action: 'Configuring authentication and authorization' },
-      { name: 'API Agent', action: 'Creating REST endpoints and controllers' },
-      { name: 'Docs Agent', action: 'Generating OpenAPI specification' },
-    ];
+    setCompletedAgents([]);
+    setAgentLogs([]);
 
-    for (let i = 0; i < agents.length; i++) {
-      setCurrentAgent(agents[i].name);
-      setAgentLogs(prev => [...prev, `[${agents[i].name}] ${agents[i].action}`]);
-      
-      for (let p = 0; p <= 100; p += 5) {
-        setGenerationProgress(((i * 100) + p) / agents.length);
-        await new Promise(resolve => setTimeout(resolve, 50));
+    // Run through the agent pipeline
+    const pipelineAgents = COGNIX_AGENTS.filter(a => 
+      ['requirement-analyzer', 'task-planner', 'architecture-designer', 'scaffolding', 
+       'dependency-manager', 'database-modeler', 'api-generator', 'security', 
+       'documentation', 'testing'].includes(a.id)
+    );
+
+    for (let i = 0; i < pipelineAgents.length; i++) {
+      const agent = pipelineAgents[i];
+      setCurrentAgentIndex(i);
+
+      // Add log entry
+      setAgentLogs(prev => [...prev, {
+        agentId: agent.id,
+        message: agent.purpose,
+        timestamp: new Date()
+      }]);
+
+      // Simulate progress
+      for (let p = 0; p <= 100; p += 10) {
+        setGenerationProgress(((i * 100) + p) / pipelineAgents.length);
+        await new Promise(resolve => setTimeout(resolve, 80));
       }
+
+      // Mark as completed
+      setCompletedAgents(prev => [...prev, agent.id]);
 
       // Add activity to database
       await supabase.from('agent_activities').insert({
         project_id: createdProject.id,
-        agent_name: agents[i].name,
-        action: agents[i].action,
+        agent_name: agent.shortName,
+        action: `Completed: ${agent.purpose}`,
+        details: agent.outputs.join(', '),
       });
+
+      await new Promise(resolve => setTimeout(resolve, 200));
     }
 
     // Update project status
@@ -228,17 +241,17 @@ const Onboarding = () => {
     switch (currentStep.id) {
       case 'welcome':
         return (
-          <div className="max-w-2xl mx-auto text-center space-y-8">
+          <div className="max-w-3xl mx-auto text-center space-y-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="space-y-4"
             >
-              <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
+              <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto border border-primary/20">
                 <Layers className="w-10 h-10 text-primary" />
               </div>
-              <h1 className="text-3xl font-bold text-foreground">Welcome to Cognix</h1>
-              <p className="text-lg text-muted-foreground leading-relaxed">
+              <h1 className="text-4xl font-bold text-foreground tracking-tight">Welcome to Cognix</h1>
+              <p className="text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto">
                 Enterprise backend infrastructure, engineered with precision.
               </p>
             </motion.div>
@@ -247,39 +260,39 @@ const Onboarding = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="grid md:grid-cols-3 gap-6 mt-12"
+              className="grid md:grid-cols-3 gap-4 mt-12"
             >
-              <div className="p-6 rounded-xl bg-card border border-border">
-                <Zap className="w-8 h-8 text-primary mb-4" />
-                <h3 className="font-semibold text-foreground mb-2">AI-Assisted</h3>
-                <p className="text-sm text-muted-foreground">
-                  Intelligent code generation with human oversight at every step.
-                </p>
-              </div>
-              <div className="p-6 rounded-xl bg-card border border-border">
-                <Shield className="w-8 h-8 text-primary mb-4" />
-                <h3 className="font-semibold text-foreground mb-2">Human-Approved</h3>
-                <p className="text-sm text-muted-foreground">
-                  Review and approve every architecture decision before implementation.
-                </p>
-              </div>
-              <div className="p-6 rounded-xl bg-card border border-border">
-                <Server className="w-8 h-8 text-primary mb-4" />
-                <h3 className="font-semibold text-foreground mb-2">Production-Ready</h3>
-                <p className="text-sm text-muted-foreground">
-                  .NET 8 Modular Monolith with best practices baked in.
-                </p>
-              </div>
+              {[
+                { icon: Terminal, title: 'AI-Assisted', desc: 'Intelligent code generation with human oversight at every step.' },
+                { icon: CheckCircle2, title: 'Human-Approved', desc: 'Review and approve every architecture decision before implementation.' },
+                { icon: Layers, title: 'Production-Ready', desc: '.NET 8 Modular Monolith with best practices baked in.' },
+              ].map((item, i) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + i * 0.1 }}
+                  className="p-6 rounded-xl bg-card border border-border text-left"
+                >
+                  <item.icon className="w-8 h-8 text-primary mb-4" />
+                  <h3 className="font-semibold text-foreground mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.desc}</p>
+                </motion.div>
+              ))}
             </motion.div>
 
-            <motion.p
+            {/* Agent Pipeline Preview */}
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="text-sm text-muted-foreground mt-8"
+              transition={{ delay: 0.5 }}
+              className="mt-12 p-6 rounded-xl bg-card/50 border border-border"
             >
-              You're about to set up production backend infrastructure.
-            </motion.p>
+              <p className="text-sm text-muted-foreground mb-4">Powered by 14 specialized engineering agents</p>
+              <div className="overflow-x-auto">
+                <AgentPipeline showLabels={false} />
+              </div>
+            </motion.div>
           </div>
         );
 
@@ -302,7 +315,7 @@ const Onboarding = () => {
                     generateShortCode(e.target.value);
                   }}
                   placeholder="e.g., acme-api"
-                  className="bg-secondary/50"
+                  className="bg-secondary/50 font-mono"
                 />
               </div>
 
@@ -347,6 +360,18 @@ const Onboarding = () => {
       case 'prompt-input':
         return (
           <div className="max-w-2xl mx-auto space-y-6">
+            {/* Active Agent Badge */}
+            {currentStepAgent && (
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className={`w-6 h-6 rounded-md ${currentStepAgent.bgColor} flex items-center justify-center`}>
+                  <currentStepAgent.icon className={`w-3.5 h-3.5 ${currentStepAgent.color}`} />
+                </div>
+                <span className={`text-sm font-medium ${currentStepAgent.color}`}>
+                  {currentStepAgent.shortName} Active
+                </span>
+              </div>
+            )}
+
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground">Describe Your Backend</h2>
               <p className="text-muted-foreground mt-2">Tell us what you're building</p>
@@ -357,7 +382,7 @@ const Onboarding = () => {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Example: Build an e-commerce API with products, orders, cart, and user authentication. Include Stripe for payments and webhook handling for order notifications."
-                className="min-h-[160px] bg-secondary/50"
+                className="min-h-[160px] bg-secondary/50 font-mono text-sm"
               />
               
               <div className="space-y-3">
@@ -392,6 +417,17 @@ const Onboarding = () => {
       case 'requirement-analysis':
         return (
           <div className="max-w-3xl mx-auto space-y-6">
+            {currentStepAgent && (
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className={`w-6 h-6 rounded-md ${currentStepAgent.bgColor} flex items-center justify-center`}>
+                  <currentStepAgent.icon className={`w-3.5 h-3.5 ${currentStepAgent.color}`} />
+                </div>
+                <span className={`text-sm font-medium ${currentStepAgent.color}`}>
+                  {currentStepAgent.shortName} • Analyzing requirements
+                </span>
+              </div>
+            )}
+
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground">Requirement Analysis</h2>
               <p className="text-muted-foreground mt-2">Structured interpretation of your requirements</p>
@@ -401,7 +437,7 @@ const Onboarding = () => {
               <Card className="bg-card border-border">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <Database className="w-4 h-4 text-primary" />
+                    <span className="w-2 h-2 rounded-full bg-cyan-500" />
                     Entities Detected
                   </CardTitle>
                 </CardHeader>
@@ -419,7 +455,7 @@ const Onboarding = () => {
               <Card className="bg-card border-border">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <Shield className="w-4 h-4 text-primary" />
+                    <span className="w-2 h-2 rounded-full bg-red-500" />
                     Authentication
                   </CardTitle>
                 </CardHeader>
@@ -440,7 +476,7 @@ const Onboarding = () => {
               <Card className="bg-card border-border">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 text-primary" />
+                    <span className="w-2 h-2 rounded-full bg-green-500" />
                     Payments
                   </CardTitle>
                 </CardHeader>
@@ -461,7 +497,7 @@ const Onboarding = () => {
               <Card className="bg-card border-border">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <Users className="w-4 h-4 text-primary" />
+                    <span className="w-2 h-2 rounded-full bg-blue-500" />
                     Multi-Tenancy
                   </CardTitle>
                 </CardHeader>
@@ -482,9 +518,20 @@ const Onboarding = () => {
       case 'clarifications':
         return (
           <div className="max-w-2xl mx-auto space-y-6">
+            {currentStepAgent && (
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className={`w-6 h-6 rounded-md ${currentStepAgent.bgColor} flex items-center justify-center`}>
+                  <currentStepAgent.icon className={`w-3.5 h-3.5 ${currentStepAgent.color}`} />
+                </div>
+                <span className={`text-sm font-medium ${currentStepAgent.color}`}>
+                  {currentStepAgent.shortName} • Confirming decisions
+                </span>
+              </div>
+            )}
+
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground">Clarifications</h2>
-              <p className="text-muted-foreground mt-2">Confirm your preferences</p>
+              <p className="text-muted-foreground mt-2">Confirm your engineering preferences</p>
             </div>
 
             <Card className="bg-card border-border">
@@ -506,19 +553,35 @@ const Onboarding = () => {
                       }
                     />
                     <div className="space-y-1">
-                      <Label htmlFor={item.key} className="cursor-pointer">{item.label}</Label>
+                      <Label htmlFor={item.key} className="cursor-pointer font-medium">{item.label}</Label>
                       <p className="text-xs text-muted-foreground">{item.description}</p>
                     </div>
                   </div>
                 ))}
               </CardContent>
             </Card>
+
+            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-secondary/30 rounded-lg p-3">
+              <Ban className="w-4 h-4 text-amber-500" />
+              <span>This agent prevents AI from guessing critical decisions. All choices are locked after confirmation.</span>
+            </div>
           </div>
         );
 
       case 'engineering-plan':
         return (
-          <div className="max-w-3xl mx-auto space-y-6">
+          <div className="max-w-4xl mx-auto space-y-6">
+            {currentStepAgent && (
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className={`w-6 h-6 rounded-md ${currentStepAgent.bgColor} flex items-center justify-center`}>
+                  <currentStepAgent.icon className={`w-3.5 h-3.5 ${currentStepAgent.color}`} />
+                </div>
+                <span className={`text-sm font-medium ${currentStepAgent.color}`}>
+                  {currentStepAgent.shortName} • Creating task breakdown
+                </span>
+              </div>
+            )}
+
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground">Engineering Plan</h2>
               <p className="text-muted-foreground mt-2">Task breakdown for your backend</p>
@@ -534,10 +597,10 @@ const Onboarding = () => {
                     <span className="text-sm font-medium text-muted-foreground">{status}</span>
                   </div>
                   
-                  {status === 'PENDING' && entities.map((entity) => (
+                  {status === 'PENDING' && entities.slice(0, 4).map((entity) => (
                     <Card key={entity} className="bg-card/50 border-border">
                       <CardContent className="p-3">
-                        <p className="text-sm font-medium">{entity} Module</p>
+                        <p className="text-sm font-medium font-mono">{entity} Module</p>
                         <p className="text-xs text-muted-foreground">CRUD endpoints, services, DTOs</p>
                       </CardContent>
                     </Card>
@@ -546,7 +609,7 @@ const Onboarding = () => {
                   {status === 'IN PROGRESS' && (
                     <Card className="bg-primary/5 border-primary/20">
                       <CardContent className="p-3">
-                        <p className="text-sm font-medium">Auth Module</p>
+                        <p className="text-sm font-medium font-mono">Auth Module</p>
                         <p className="text-xs text-muted-foreground">{authMethod} implementation</p>
                       </CardContent>
                     </Card>
@@ -556,13 +619,13 @@ const Onboarding = () => {
                     <>
                       <Card className="bg-green-500/5 border-green-500/20">
                         <CardContent className="p-3">
-                          <p className="text-sm font-medium">Project Scaffold</p>
+                          <p className="text-sm font-medium font-mono">Project Scaffold</p>
                           <p className="text-xs text-muted-foreground">Solution structure created</p>
                         </CardContent>
                       </Card>
                       <Card className="bg-green-500/5 border-green-500/20">
                         <CardContent className="p-3">
-                          <p className="text-sm font-medium">Requirements Analysis</p>
+                          <p className="text-sm font-medium font-mono">Requirements Analysis</p>
                           <p className="text-xs text-muted-foreground">Entities and modules defined</p>
                         </CardContent>
                       </Card>
@@ -577,63 +640,109 @@ const Onboarding = () => {
       case 'architecture-review':
         return (
           <div className="max-w-4xl mx-auto space-y-6">
+            {currentStepAgent && (
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className={`w-6 h-6 rounded-md ${currentStepAgent.bgColor} flex items-center justify-center`}>
+                  <currentStepAgent.icon className={`w-3.5 h-3.5 ${currentStepAgent.color}`} />
+                </div>
+                <span className={`text-sm font-medium ${currentStepAgent.color}`}>
+                  {currentStepAgent.shortName} • Designing module structure
+                </span>
+              </div>
+            )}
+
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground">Architecture Review</h2>
               <p className="text-muted-foreground mt-2">Modular Monolith structure</p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-4">
-              {['Auth', ...entities].map((module, index) => (
-                <motion.div
-                  key={module}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Card className="bg-card border-border h-full">
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <Code2 className="w-4 h-4 text-primary" />
+              {['Auth', ...entities].slice(0, 6).map((module, index) => {
+                const moduleAgent = COGNIX_AGENTS.find(a => a.id === 'api-generator');
+                
+                return (
+                  <motion.div
+                    key={module}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Card className="bg-card border-border h-full">
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className={`w-8 h-8 rounded-lg ${moduleAgent?.bgColor || 'bg-primary/10'} flex items-center justify-center`}>
+                            {moduleAgent?.icon && <moduleAgent.icon className={`w-4 h-4 ${moduleAgent.color}`} />}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold font-mono">{module}</h3>
+                            <p className="text-xs text-muted-foreground">5 endpoints</p>
+                          </div>
                         </div>
-                        <div>
-                          <h3 className="font-semibold">{module}</h3>
-                          <p className="text-xs text-muted-foreground">5 endpoints</p>
+                        <div className="space-y-1 font-mono text-xs">
+                          <p className="text-muted-foreground">GET /{module.toLowerCase()}s</p>
+                          <p className="text-muted-foreground">POST /{module.toLowerCase()}s</p>
+                          <p className="text-muted-foreground">GET /{module.toLowerCase()}s/:id</p>
                         </div>
-                      </div>
-                      <div className="space-y-1 font-mono text-xs">
-                        <p className="text-muted-foreground">GET /{module.toLowerCase()}s</p>
-                        <p className="text-muted-foreground">POST /{module.toLowerCase()}s</p>
-                        <p className="text-muted-foreground">GET /{module.toLowerCase()}s/:id</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-destructive/5 border border-destructive/20 rounded-lg p-3">
+              <Ban className="w-4 h-4 text-destructive" />
+              <span>No code will be generated until you approve this architecture.</span>
             </div>
           </div>
         );
 
       case 'code-generation':
         return (
-          <div className="max-w-2xl mx-auto space-y-6">
+          <div className="max-w-3xl mx-auto space-y-6">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground">Code Generation</h2>
               <p className="text-muted-foreground mt-2">Building your backend infrastructure</p>
             </div>
 
+            {/* Agent Pipeline */}
+            <Card className="bg-card border-border overflow-hidden">
+              <CardContent className="p-4">
+                <AgentPipeline 
+                  currentAgentId={COGNIX_AGENTS[currentAgentIndex]?.id}
+                  completedAgents={completedAgents}
+                  vertical
+                />
+              </CardContent>
+            </Card>
+
+            {/* Progress */}
             <Card className="bg-card border-border">
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-center gap-3 mb-4">
                   {isProcessing ? (
                     <Loader2 className="w-6 h-6 text-primary animate-spin" />
-                  ) : (
+                  ) : completedAgents.length > 0 ? (
                     <CheckCircle2 className="w-6 h-6 text-green-500" />
+                  ) : (
+                    <Activity className="w-6 h-6 text-muted-foreground" />
                   )}
                   <div>
-                    <p className="font-semibold">{currentAgent || 'Generation Complete'}</p>
+                    <p className="font-semibold">
+                      {isProcessing 
+                        ? COGNIX_AGENTS[currentAgentIndex]?.shortName || 'Processing...'
+                        : completedAgents.length > 0 
+                          ? 'Generation Complete'
+                          : 'Ready to generate'
+                      }
+                    </p>
                     <p className="text-sm text-muted-foreground">
-                      {isProcessing ? 'Processing...' : 'All agents completed'}
+                      {isProcessing 
+                        ? `Agent ${currentAgentIndex + 1} of ${COGNIX_AGENTS.length}`
+                        : completedAgents.length > 0
+                          ? 'All agents completed'
+                          : 'Click Continue to start'
+                      }
                     </p>
                   </div>
                 </div>
@@ -643,10 +752,16 @@ const Onboarding = () => {
                   {Math.round(generationProgress)}% complete
                 </p>
 
+                {/* Agent Logs */}
                 <div className="bg-secondary/30 rounded-lg p-4 font-mono text-xs max-h-[200px] overflow-y-auto space-y-1">
-                  {agentLogs.map((log, i) => (
-                    <p key={i} className="text-muted-foreground">{log}</p>
-                  ))}
+                  {agentLogs.map((log, i) => {
+                    const agent = COGNIX_AGENTS.find(a => a.id === log.agentId);
+                    return (
+                      <p key={i} className="text-muted-foreground">
+                        <span className={agent?.color || 'text-primary'}>[{agent?.shortName}]</span> {log.message}
+                      </p>
+                    );
+                  })}
                   {agentLogs.length === 0 && (
                     <p className="text-muted-foreground">Waiting to start generation...</p>
                   )}
@@ -659,9 +774,20 @@ const Onboarding = () => {
       case 'api-preview':
         return (
           <div className="max-w-3xl mx-auto space-y-6">
+            {currentStepAgent && (
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className={`w-6 h-6 rounded-md ${currentStepAgent.bgColor} flex items-center justify-center`}>
+                  <currentStepAgent.icon className={`w-3.5 h-3.5 ${currentStepAgent.color}`} />
+                </div>
+                <span className={`text-sm font-medium ${currentStepAgent.color}`}>
+                  {currentStepAgent.shortName} • Generated OpenAPI spec
+                </span>
+              </div>
+            )}
+
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground">API Preview</h2>
-              <p className="text-muted-foreground mt-2">OpenAPI 3.0 Specification</p>
+              <p className="text-muted-foreground mt-2">OpenAPI 3.1 Specification</p>
             </div>
 
             <Card className="bg-card border-border">
@@ -675,18 +801,24 @@ const Onboarding = () => {
                 {['Auth', ...entities].flatMap((module) => [
                   { method: 'GET', path: `/api/v1/${module.toLowerCase()}s`, auth: module !== 'Auth' },
                   { method: 'POST', path: `/api/v1/${module.toLowerCase()}s`, auth: true },
-                ]).slice(0, 8).map((ep, i) => (
-                  <div key={i} className="flex items-center gap-3 font-mono text-sm">
-                    <Badge 
-                      variant="outline"
-                      className={ep.method === 'GET' ? 'text-green-500 border-green-500/30' : 'text-blue-500 border-blue-500/30'}
-                    >
-                      {ep.method}
-                    </Badge>
-                    <span className="text-muted-foreground">{ep.path}</span>
-                    {ep.auth && <Shield className="w-3 h-3 text-amber-500" />}
-                  </div>
-                ))}
+                ]).slice(0, 10).map((ep, i) => {
+                  const securityAgent = COGNIX_AGENTS.find(a => a.id === 'security');
+                  
+                  return (
+                    <div key={i} className="flex items-center gap-3 font-mono text-sm">
+                      <Badge 
+                        variant="outline"
+                        className={ep.method === 'GET' ? 'text-green-500 border-green-500/30' : 'text-blue-500 border-blue-500/30'}
+                      >
+                        {ep.method}
+                      </Badge>
+                      <span className="text-muted-foreground flex-1">{ep.path}</span>
+                      {ep.auth && securityAgent && (
+                        <securityAgent.icon className={`w-3.5 h-3.5 ${securityAgent.color}`} />
+                      )}
+                    </div>
+                  );
+                })}
               </CardContent>
             </Card>
           </div>
@@ -695,6 +827,17 @@ const Onboarding = () => {
       case 'sandbox-deployment':
         return (
           <div className="max-w-2xl mx-auto space-y-6">
+            {currentStepAgent && (
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className={`w-6 h-6 rounded-md ${currentStepAgent.bgColor} flex items-center justify-center`}>
+                  <currentStepAgent.icon className={`w-3.5 h-3.5 ${currentStepAgent.color}`} />
+                </div>
+                <span className={`text-sm font-medium ${currentStepAgent.color}`}>
+                  {currentStepAgent.shortName} • Deployed to sandbox
+                </span>
+              </div>
+            )}
+
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground">Sandbox Deployment</h2>
               <p className="text-muted-foreground mt-2">Your API is now live</p>
@@ -717,12 +860,28 @@ const Onboarding = () => {
                 </Badge>
               </CardContent>
             </Card>
+
+            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-secondary/30 rounded-lg p-3">
+              <Ban className="w-4 h-4 text-amber-500" />
+              <span>Sandbox has no production access. Data resets periodically.</span>
+            </div>
           </div>
         );
 
       case 'github-integration':
         return (
           <div className="max-w-2xl mx-auto space-y-6">
+            {currentStepAgent && (
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className={`w-6 h-6 rounded-md ${currentStepAgent.bgColor} flex items-center justify-center`}>
+                  <currentStepAgent.icon className={`w-3.5 h-3.5 ${currentStepAgent.color}`} />
+                </div>
+                <span className={`text-sm font-medium ${currentStepAgent.color}`}>
+                  {currentStepAgent.shortName} • Repository sync
+                </span>
+              </div>
+            )}
+
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground">GitHub Integration</h2>
               <p className="text-muted-foreground mt-2">Connect your repository</p>
@@ -730,7 +889,7 @@ const Onboarding = () => {
 
             <Card className="bg-card border-border">
               <CardContent className="p-6 text-center space-y-4">
-                <GitBranch className="w-12 h-12 text-muted-foreground mx-auto" />
+                {currentStepAgent && <currentStepAgent.icon className="w-12 h-12 text-muted-foreground mx-auto" />}
                 <div>
                   <p className="text-foreground font-medium">Optional: Connect to GitHub</p>
                   <p className="text-sm text-muted-foreground mt-1">
@@ -738,7 +897,7 @@ const Onboarding = () => {
                   </p>
                 </div>
                 <Button variant="outline" className="gap-2">
-                  <GitBranch className="w-4 h-4" />
+                  {currentStepAgent && <currentStepAgent.icon className="w-4 h-4" />}
                   Connect Repository
                 </Button>
                 <p className="text-xs text-muted-foreground">You can configure this later in settings</p>
@@ -765,27 +924,19 @@ const Onboarding = () => {
             </motion.div>
 
             <div className="grid md:grid-cols-3 gap-4 text-left">
-              <Card className="bg-card border-border">
-                <CardContent className="p-4">
-                  <CheckCircle2 className="w-5 h-5 text-green-500 mb-2" />
-                  <p className="font-medium text-sm">Project Created</p>
-                  <p className="text-xs text-muted-foreground">{projectName}</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-card border-border">
-                <CardContent className="p-4">
-                  <CheckCircle2 className="w-5 h-5 text-green-500 mb-2" />
-                  <p className="font-medium text-sm">Modules Generated</p>
-                  <p className="text-xs text-muted-foreground">{entities.length + 1} modules</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-card border-border">
-                <CardContent className="p-4">
-                  <CheckCircle2 className="w-5 h-5 text-green-500 mb-2" />
-                  <p className="font-medium text-sm">Sandbox Live</p>
-                  <p className="text-xs text-muted-foreground">Ready for testing</p>
-                </CardContent>
-              </Card>
+              {[
+                { title: 'Project Created', value: projectName },
+                { title: 'Modules Generated', value: `${entities.length + 1} modules` },
+                { title: 'Sandbox Live', value: 'Ready for testing' },
+              ].map((item) => (
+                <Card key={item.title} className="bg-card border-border">
+                  <CardContent className="p-4">
+                    <CheckCircle2 className="w-5 h-5 text-green-500 mb-2" />
+                    <p className="font-medium text-sm">{item.title}</p>
+                    <p className="text-xs text-muted-foreground font-mono">{item.value}</p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
 
             <Button size="lg" onClick={handleComplete} className="gap-2">
@@ -808,11 +959,11 @@ const Onboarding = () => {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <Layers className="w-6 h-6 text-primary" />
-              <span className="font-semibold text-foreground">COGNIX</span>
+              <span className="font-semibold text-foreground tracking-tight">COGNIX</span>
               <Badge variant="outline" className="text-xs font-mono">MVP 1.0.0</Badge>
             </div>
-            <p className="text-sm text-muted-foreground">
-              Step {currentStepIndex + 1} of {steps.length}
+            <p className="text-sm text-muted-foreground font-mono">
+              Step {currentStepIndex + 1} / {steps.length}
             </p>
           </div>
           
@@ -833,7 +984,7 @@ const Onboarding = () => {
       </div>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-6 py-12">
+      <main className="max-w-6xl mx-auto px-6 py-12 pb-32">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep.id}
