@@ -20,6 +20,7 @@ import {
   Plus,
   ChevronDown,
   Circle,
+  Loader2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -35,7 +36,7 @@ import CognixLogo from '@/components/CognixLogo';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useAuth } from '@/hooks/useAuth';
 import { useProjectContext } from '@/contexts/ProjectContext';
-import { Loader2 } from 'lucide-react';
+import { ProjectChatPanel } from '@/components/dashboard/ProjectChatPanel';
 
 interface NavItem {
   id: string;
@@ -318,6 +319,15 @@ const DashboardLayoutNew = () => {
           <Outlet />
         </main>
       </div>
+
+      {/* Project Chat Panel - Only show when a project is selected */}
+      {projectId && currentProject && (
+        <ProjectChatPanel
+          projectId={projectId}
+          projectName={currentProject.name}
+          currentPrompt={currentProject.prompt || undefined}
+        />
+      )}
     </div>
   );
 };
