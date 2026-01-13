@@ -1,21 +1,37 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import CognixLogo from './CognixLogo';
 import { ThemeToggle } from './ThemeToggle';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    // Check auth status
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsLoggedIn(!!session);
+    });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const navLinks = [
@@ -73,9 +89,23 @@ const Header = () => {
           <Button variant="ghost" size="sm" asChild>
             <Link to="/docs">Docs</Link>
           </Button>
-          <Button variant="glow" size="sm" asChild>
-            <a href="/#waitlist">Join Waitlist</a>
-          </Button>
+          {isLoggedIn ? (
+            <Button variant="glow" size="sm" asChild className="gap-2">
+              <Link to="/dashboard">
+                <Sparkles className="w-4 h-4" />
+                Try Cognix
+                <Badge variant="secondary" className="ml-1 text-[10px] px-1.5 py-0">MVP</Badge>
+              </Link>
+            </Button>
+          ) : (
+            <Button variant="glow" size="sm" asChild className="gap-2">
+              <Link to="/auth">
+                <Sparkles className="w-4 h-4" />
+                Try Cognix
+                <Badge variant="secondary" className="ml-1 text-[10px] px-1.5 py-0">MVP</Badge>
+              </Link>
+            </Button>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -123,8 +153,12 @@ const Header = () => {
             >
               Documentation
             </Link>
-            <Button variant="glow" className="mt-3" asChild>
-              <a href="/#waitlist">Join Waitlist</a>
+            <Button variant="glow" className="mt-3 gap-2" asChild>
+              <Link to={isLoggedIn ? "/dashboard" : "/auth"} onClick={() => setIsMobileMenuOpen(false)}>
+                <Sparkles className="w-4 h-4" />
+                Try Cognix
+                <Badge variant="secondary" className="ml-1 text-[10px] px-1.5 py-0">MVP</Badge>
+              </Link>
             </Button>
           </nav>
         </div>
