@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import cognixLogo from "@/assets/cognix-logo.svg";
 
 interface SplashScreenProps {
@@ -11,133 +11,152 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
 
   useEffect(() => {
     const timers = [
-      setTimeout(() => setPhase(1), 200),    // Start logo animation
-      setTimeout(() => setPhase(2), 1500),   // Logo complete, start text
-      setTimeout(() => setPhase(3), 2800),   // Subtext
-      setTimeout(() => setPhase(4), 3800),   // Powered by
-      setTimeout(() => onComplete(), 4800),  // Complete
+      setTimeout(() => setPhase(1), 100),     // Start logo build
+      setTimeout(() => setPhase(2), 800),     // Logo layers animate
+      setTimeout(() => setPhase(3), 1600),    // Logo complete, start text
+      setTimeout(() => setPhase(4), 2600),    // Tagline
+      setTimeout(() => setPhase(5), 3400),    // Powered by
+      setTimeout(() => onComplete(), 4200),   // Complete
     ];
     return () => timers.forEach(clearTimeout);
   }, [onComplete]);
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-background"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-background overflow-hidden"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.8, ease: "easeInOut" }}
+      transition={{ duration: 0.6, ease: "easeInOut" }}
     >
-      {/* Subtle dot pattern - theme aware */}
-      <div className="absolute inset-0 opacity-[0.03]">
+      {/* Subtle geometric pattern - theme aware */}
+      <div className="absolute inset-0 opacity-[0.02]">
         <div 
           className="absolute inset-0"
           style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, hsl(var(--foreground)) 1px, transparent 0)`,
-            backgroundSize: '48px 48px'
+            backgroundImage: `
+              linear-gradient(to right, hsl(var(--foreground)) 1px, transparent 1px),
+              linear-gradient(to bottom, hsl(var(--foreground)) 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px'
           }}
         />
       </div>
 
-      {/* Animated glow background - theme aware */}
+      {/* Animated glow orbs - theme aware */}
       <motion.div
-        className="absolute w-[700px] h-[700px] rounded-full"
+        className="absolute w-[600px] h-[600px] rounded-full blur-3xl"
         style={{
-          background: 'radial-gradient(circle, hsl(var(--primary) / 0.12) 0%, hsl(var(--primary) / 0.03) 40%, transparent 70%)'
+          background: 'radial-gradient(circle, hsl(var(--primary) / 0.15) 0%, transparent 70%)'
         }}
         initial={{ scale: 0, opacity: 0 }}
         animate={{ 
-          scale: phase >= 1 ? 1.8 : 0, 
+          scale: phase >= 1 ? 1.5 : 0, 
           opacity: phase >= 1 ? 1 : 0 
         }}
-        transition={{ duration: 2.5, ease: "easeOut" }}
+        transition={{ duration: 2, ease: "easeOut" }}
       />
 
-      {/* Secondary accent glow */}
       <motion.div
-        className="absolute w-[400px] h-[400px] rounded-full"
+        className="absolute w-[400px] h-[400px] rounded-full blur-3xl"
         style={{
-          background: 'radial-gradient(circle, hsl(var(--accent) / 0.08) 0%, transparent 60%)'
+          background: 'radial-gradient(circle, hsl(var(--accent) / 0.1) 0%, transparent 70%)'
         }}
-        initial={{ scale: 0, opacity: 0, x: 100, y: -50 }}
+        initial={{ scale: 0, opacity: 0, x: 150, y: -80 }}
         animate={{ 
-          scale: phase >= 2 ? 1.5 : 0, 
+          scale: phase >= 2 ? 1.2 : 0, 
           opacity: phase >= 2 ? 1 : 0,
-          x: 100,
-          y: -50
+          x: 150,
+          y: -80
         }}
-        transition={{ duration: 2, delay: 0.5, ease: "easeOut" }}
+        transition={{ duration: 1.5, delay: 0.3, ease: "easeOut" }}
       />
 
       <div className="relative flex flex-col items-center">
-        {/* Logo Container with SVG */}
+        {/* Logo Container with Layer Animation */}
         <motion.div 
-          className="relative w-48 h-32 mb-8 flex items-center justify-center"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ 
-            opacity: phase >= 1 ? 1 : 0,
-            scale: phase >= 1 ? 1 : 0.8
-          }}
-          transition={{ duration: 1, ease: "easeOut" }}
+          className="relative w-56 h-36 mb-10 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
         >
-          {/* Reveal mask animation */}
+          {/* Logo with progressive reveal */}
           <motion.div
-            className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-xl"
-            initial={{ clipPath: "inset(100% 0% 0% 0%)" }}
+            className="relative w-full h-full flex items-center justify-center"
+            initial={{ opacity: 0, scale: 0.7, rotateY: -30 }}
             animate={{ 
-              clipPath: phase >= 1 ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)"
+              opacity: phase >= 1 ? 1 : 0,
+              scale: phase >= 2 ? 1 : 0.85,
+              rotateY: phase >= 2 ? 0 : -15
             }}
-            transition={{ duration: 1.2, delay: 0.3, ease: [0.65, 0, 0.35, 1] }}
+            transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
           >
             <img 
               src={cognixLogo} 
               alt="Cognix Logo" 
-              className="w-full h-full object-contain drop-shadow-lg"
+              className="w-full h-full object-contain"
               style={{ 
-                filter: 'drop-shadow(0 4px 20px hsl(var(--primary) / 0.15))'
+                filter: `drop-shadow(0 8px 32px hsl(var(--primary) / 0.25))`
               }}
             />
           </motion.div>
 
-          {/* Shimmer effect */}
+          {/* Pulse ring effect */}
           <motion.div
-            className="absolute inset-0 pointer-events-none rounded-xl overflow-hidden"
+            className="absolute inset-0 rounded-2xl pointer-events-none"
+            style={{
+              border: '2px solid hsl(var(--primary) / 0.3)'
+            }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ 
+              opacity: phase >= 2 ? [0, 0.5, 0] : 0,
+              scale: phase >= 2 ? [0.9, 1.3, 1.5] : 0.8
+            }}
+            transition={{ 
+              duration: 1.2, 
+              delay: 0.5,
+              ease: "easeOut"
+            }}
+          />
+
+          {/* Shimmer sweep */}
+          <motion.div
+            className="absolute inset-0 pointer-events-none rounded-2xl overflow-hidden"
             initial={{ opacity: 0 }}
-            animate={{ opacity: phase >= 1 ? 1 : 0 }}
+            animate={{ opacity: phase >= 2 ? 1 : 0 }}
           >
             <motion.div
               className="absolute inset-0"
               style={{
-                background: 'linear-gradient(90deg, transparent 0%, hsl(var(--primary) / 0.15) 50%, transparent 100%)',
-                transform: 'skewX(-20deg)'
+                background: 'linear-gradient(110deg, transparent 20%, hsl(var(--primary) / 0.2) 50%, transparent 80%)',
               }}
-              initial={{ x: '-200%' }}
+              initial={{ x: '-150%' }}
               animate={{ 
-                x: phase >= 1 ? '200%' : '-200%'
+                x: phase >= 2 ? '150%' : '-150%'
               }}
-              transition={{ duration: 1.5, delay: 1, ease: "easeInOut" }}
+              transition={{ duration: 1, delay: 0.8, ease: "easeInOut" }}
             />
           </motion.div>
         </motion.div>
 
-        {/* Typography - COGNIX with letter animation */}
+        {/* Typography - COGNIX with staggered letter animation */}
         <div className="text-center overflow-hidden">
           <motion.h1 
-            className="text-5xl md:text-7xl font-bold tracking-[0.25em] text-foreground mb-3"
+            className="text-5xl md:text-7xl font-bold tracking-[0.2em] text-foreground mb-4"
             style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
           >
             {"COGNIX".split("").map((letter, i) => (
               <motion.span
                 key={i}
                 className="inline-block"
-                initial={{ opacity: 0, y: 40, rotateX: -90 }}
+                initial={{ opacity: 0, y: 50, rotateX: -90 }}
                 animate={{ 
-                  opacity: phase >= 2 ? 1 : 0,
-                  y: phase >= 2 ? 0 : 40,
-                  rotateX: phase >= 2 ? 0 : -90
+                  opacity: phase >= 3 ? 1 : 0,
+                  y: phase >= 3 ? 0 : 50,
+                  rotateX: phase >= 3 ? 0 : -90
                 }}
                 transition={{ 
-                  duration: 0.6, 
-                  delay: phase >= 2 ? i * 0.08 : 0,
+                  duration: 0.5, 
+                  delay: phase >= 3 ? i * 0.06 : 0,
                   ease: [0.22, 1, 0.36, 1]
                 }}
               >
@@ -150,62 +169,68 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
         {/* Tagline - AI Intelligence Backend as a Service */}
         <motion.div
           className="text-center overflow-hidden"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 25 }}
           animate={{ 
-            opacity: phase >= 3 ? 1 : 0,
-            y: phase >= 3 ? 0 : 20
+            opacity: phase >= 4 ? 1 : 0,
+            y: phase >= 4 ? 0 : 25
           }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
         >
-          <p className="text-base md:text-lg text-muted-foreground tracking-[0.15em] uppercase font-medium">
+          <p className="text-sm md:text-base text-muted-foreground tracking-[0.2em] uppercase font-medium">
             AI Intelligence Backend as a Service
           </p>
         </motion.div>
 
-        {/* Separator line */}
+        {/* Separator line with glow */}
         <motion.div
-          className="w-16 h-px bg-border mt-8 mb-6"
+          className="relative w-20 h-px mt-10 mb-6"
           initial={{ scaleX: 0, opacity: 0 }}
           animate={{ 
-            scaleX: phase >= 4 ? 1 : 0,
-            opacity: phase >= 4 ? 1 : 0
+            scaleX: phase >= 5 ? 1 : 0,
+            opacity: phase >= 5 ? 1 : 0
           }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        />
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary to-transparent" />
+          <div 
+            className="absolute inset-0 blur-sm" 
+            style={{ background: 'linear-gradient(to right, transparent, hsl(var(--primary)), transparent)' }}
+          />
+        </motion.div>
 
         {/* Powered by */}
         <motion.div
-          className="flex flex-col items-center gap-1"
-          initial={{ opacity: 0, y: 10 }}
+          className="flex flex-col items-center gap-1.5"
+          initial={{ opacity: 0, y: 15 }}
           animate={{ 
-            opacity: phase >= 4 ? 1 : 0,
-            y: phase >= 4 ? 0 : 10
+            opacity: phase >= 5 ? 1 : 0,
+            y: phase >= 5 ? 0 : 15
           }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <span className="text-xs text-muted-foreground/60 uppercase tracking-widest">Powered by</span>
-          <span className="text-sm font-semibold text-foreground/80 tracking-wide">Cropxon Innovations Pvt. Ltd.</span>
+          <span className="text-[10px] text-muted-foreground/50 uppercase tracking-[0.3em]">Powered by</span>
+          <span className="text-xs font-semibold text-foreground/70 tracking-wider">Cropxon Innovations Pvt. Ltd.</span>
         </motion.div>
 
-        {/* Loading dots */}
+        {/* Loading indicator - animated bars */}
         <motion.div
-          className="mt-14 flex gap-1.5"
+          className="mt-16 flex gap-1"
           initial={{ opacity: 0 }}
           animate={{ opacity: phase >= 1 ? 1 : 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.4 }}
         >
-          {[0, 1, 2].map((i) => (
+          {[0, 1, 2, 3, 4].map((i) => (
             <motion.div
               key={i}
-              className="w-1.5 h-1.5 rounded-full bg-primary"
+              className="w-1 bg-primary rounded-full"
               animate={{
-                scale: [1, 1.3, 1],
+                height: [12, 24, 12],
                 opacity: [0.4, 1, 0.4],
               }}
               transition={{
-                duration: 1,
+                duration: 0.8,
                 repeat: Infinity,
-                delay: i * 0.15,
+                delay: i * 0.1,
                 ease: "easeInOut",
               }}
             />
