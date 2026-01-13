@@ -131,16 +131,7 @@ const DashboardLayoutNew = () => {
         {/* Logo */}
         <div className="flex items-center justify-between h-14 px-4 border-b border-border">
           <Link to="/" className="flex items-center gap-2">
-            <CognixLogo size="sm" showText={false} />
-            {!collapsed && (
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="font-semibold text-foreground"
-              >
-                Cognix
-              </motion.span>
-            )}
+            <CognixLogo size="sm" showText={!collapsed} />
           </Link>
         </div>
 

@@ -44,7 +44,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <CognixLogo />
+              <CognixLogo size="sm" />
               <Badge variant="outline" className="font-mono text-xs">
                 MVP 1.0.0
               </Badge>

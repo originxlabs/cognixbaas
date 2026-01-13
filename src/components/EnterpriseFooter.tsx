@@ -33,12 +33,8 @@ const EnterpriseFooter = () => {
         <div className="grid lg:grid-cols-6 gap-8 mb-12">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center gap-2.5 mb-4">
-              <CognixLogo size="sm" showText={false} />
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold tracking-tight text-foreground">COGNIX</span>
-                <span className="text-[9px] text-muted-foreground font-medium tracking-wide uppercase -mt-0.5">by CROPXON</span>
-              </div>
+            <Link to="/" className="flex items-center mb-4">
+              <CognixLogo size="sm" />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
               AI-assisted backend engineering platform. 
