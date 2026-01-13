@@ -2,8 +2,8 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Check, Zap, Building2, Rocket } from 'lucide-react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import EnterpriseHeader from '@/components/EnterpriseHeader';
+import EnterpriseFooter from '@/components/EnterpriseFooter';
 import { Button } from '@/components/ui/button';
 
 const plans = [
@@ -74,7 +74,7 @@ const Pricing = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background text-foreground">
-        <Header />
+        <EnterpriseHeader />
         
         <main className="pt-24 pb-16">
           <div className="container mx-auto px-4">
@@ -193,7 +193,7 @@ const Pricing = () => {
           </div>
         </main>
 
-        <Footer />
+        <EnterpriseFooter />
       </div>
     </>
   );
