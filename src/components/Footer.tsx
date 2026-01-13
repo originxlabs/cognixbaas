@@ -1,6 +1,7 @@
 import { Github, Twitter, Linkedin, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import CognixLogo from './CognixLogo';
+import { Badge } from './ui/badge';
 
 const Footer = () => {
   const links = {
@@ -42,7 +43,12 @@ const Footer = () => {
         <div className="grid lg:grid-cols-6 gap-10">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <CognixLogo className="mb-4" />
+            <div className="flex items-center gap-3 mb-4">
+              <CognixLogo />
+              <Badge variant="outline" className="font-mono text-xs">
+                MVP 1.0.0
+              </Badge>
+            </div>
             <p className="text-muted-foreground text-sm leading-relaxed mb-4 max-w-sm">
               Reimagining backend development with intelligent systems. 
               Building the future where great backends write themselves.
@@ -165,9 +171,14 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="mt-10 pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-3">
-          <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} CropXon Innovations Pvt Ltd. All rights reserved.
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-xs text-muted-foreground">
+              © {new Date().getFullYear()} CropXon Innovations Pvt Ltd. All rights reserved.
+            </p>
+            <Badge variant="secondary" className="font-mono text-[10px]">
+              MVP 1.0.0
+            </Badge>
+          </div>
           <p className="text-xs text-muted-foreground">
             Early access: <a href="mailto:early@cognix.dev" className="text-primary hover:underline">early@cognix.dev</a>
           </p>

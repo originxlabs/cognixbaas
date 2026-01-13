@@ -21,7 +21,7 @@ import DashboardLayoutNew from "./components/dashboard/DashboardLayoutNew";
 import DashboardProjects from "./pages/dashboard/DashboardProjects";
 import DashboardSettings from "./pages/dashboard/DashboardSettings";
 import DashboardProjectOverview from "./pages/dashboard/DashboardProjectOverview";
-import DashboardPrompt from "./pages/dashboard/DashboardPrompt";
+import DashboardPromptConfig from "./pages/dashboard/DashboardPromptConfig";
 import DashboardTasksKanban from "./pages/dashboard/DashboardTasksKanban";
 import DashboardArchitecture from "./pages/dashboard/DashboardArchitecture";
 import DashboardAPIs from "./pages/dashboard/DashboardAPIs";
@@ -63,7 +63,7 @@ const App = () => (
                         
                         {/* Project-specific routes */}
                         <Route path="project/:projectId" element={<DashboardProjectOverview />} />
-                        <Route path="project/:projectId/prompt" element={<DashboardPrompt />} />
+                        <Route path="project/:projectId/prompt" element={<DashboardPromptConfig />} />
                         <Route path="project/:projectId/tasks" element={<DashboardTasksKanban />} />
                         <Route path="project/:projectId/architecture" element={<DashboardArchitecture />} />
                         <Route path="project/:projectId/apis" element={<DashboardAPIs />} />
